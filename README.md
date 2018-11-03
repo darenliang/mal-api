@@ -224,8 +224,9 @@ get_genre_url(l, s, f) > list
 # returns list of urls of anime specified genre
 # Format: ('category', start, finish)
 
-# Formats for genres
 '''
+Formats for genres
+
 Valid Categories:
 - Action
 - Adventure
