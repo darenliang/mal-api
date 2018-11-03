@@ -14,7 +14,8 @@ Example:
 ```python
 import mal-api
 
-print(mal-api.get_anime_score("Made in Abyss")) # 8.89
+print(mal-api.get_anime_score("Made in Abyss"))
+# prints 8.89
 ```
 
 ## API Documentation
