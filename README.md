@@ -19,6 +19,8 @@ print(mal-api.get_anime_score("Made in Abyss")) # 8.89
 
 ## API Documentation
 
+Currently, there are 41 API functions implemented in mal-api.
+
 To call an API, you need either the anime's name or the MAL base url of an anime.
 
 ```python
