@@ -235,8 +235,8 @@ get_genre_name(l, s, f) > list
 get_genre_url(l, s, f) > list
 # returns list of urls of anime specified genre
 # Format: ('category', start, finish)
+```
 
-'''
 Formats for genres
 
 Valid Categories:
@@ -283,5 +283,3 @@ Valid Categories:
 - Vampire
 - Yaoi
 - Yuri
-'''
-```
