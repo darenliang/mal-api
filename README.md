@@ -27,6 +27,9 @@ To call an API, you need either the anime's name or the MAL base url of an anime
 get_anime_url(str) > str
 # returns MAL anime url
 
+get_anime_name(str) > str
+# returns anime name from MAL anime url
+
 get_anime_type(str) > str
 # returns anime type (TV, Movie, OVA, etc)
 
@@ -65,6 +68,9 @@ get_anime_duration(str) > str
 
 get_anime_rating(str) > str
 # returns anime age rating
+
+get_anime_synopsis(str) > str
+# returns anime synopsis
 
 get_anime_score(str) > float
 # returns anime score
@@ -149,4 +155,120 @@ get_anime_scoredist(str) > list(list)
 
 get_anime_deviation(str) > float
 # returns anime score deviation
+
+get_topanime(n) > str
+# returns anime of the same top rank
+
+get_topairing(n) > str
+# returns top airing anime of the same rank
+
+get_topupcoming(n) > str
+# returns top upcoming anime of the same rank
+
+get_toptv(n) > str
+# returns top tv anime of the same rank
+
+get_topmovie(n) > str
+# returns top movie anime of the same rank
+
+get_topova(n) > str
+# returns top OVA anime of the same rank
+
+get_topspecial(n) > str
+# returns top special anime of the same rank
+
+get_mostpopular(n) > str
+# returns most popular anime of the same rank
+
+get_mostfavorite(n) > str
+# returns most favorite anime of the same rank
+
+get_toplist_name(l, s, f) > list
+# returns list of names of top anime in a specified category
+# Format: ('url suffix', start, finish)
+
+get_toplist_url(l, s, f) > list
+# returns list of urls of top anime in a specified category
+# Format: ('url suffix', start, finish)
+
+get_key_name(l, s, f) > list
+# returns list of names of anime in a specified pseudo-static category
+# Format: ('url suffix', start, finish)
+
+get_key_url(l, s, f) > list
+# returns list of urls of anime in a specified pseudo-static category
+# Format: ('url suffix', start, finish)
+
+get_custom_name(l, s, f) > list
+# returns list of names of anime in a custom search
+# Format: ('complete url suffix', start, finish)
+
+get_custom_url(l, s, f) > list
+# returns list of urls of anime in a custom search
+# Format: ('complete url suffix', start, finish)
+
+get_season_name(l) > list
+# returns list of names of anime in a season
+# Format: 'season year'
+# Example: 'Spring 2017'
+
+get_season_url(l) > list
+# returns list of urls of anime in a season
+# Format: 'season year'
+
+get_genre_name(l, s, f) > list
+# returns list of names of anime of specified genre
+# Format: ('category', start, finish)
+
+get_genre_url(l, s, f) > list
+# returns list of urls of anime specified genre
+# Format: ('category', start, finish)
+
+# Formats for genres
+'''
+Valid Categories:
+- Action
+- Adventure
+- Cars
+- Comedy
+- Dementia
+- Demons
+- Drama
+- Ecchi
+- Fantasy
+- Game
+- Harem
+- Hentai
+- Historical
+- Horror
+- Josei
+- Kids
+- Magic
+- Martial Arts
+- Mecha
+- Military
+- Music
+- Mystery
+- Parody
+- Police
+- Psychological
+- Romance
+- Samurai
+- School
+- Sci-Fi
+- Seinen
+- Shoujo
+- Shoujo Ai
+- Shounen
+- Shounen Ai
+- Slice of Life
+- Space
+- Sports
+- Super Power
+- Supernatural
+- Thriller
+- Vampire
+- Yaoi
+- Yuri
+'''
 ```
