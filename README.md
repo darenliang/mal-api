@@ -7,3 +7,9 @@ Welcome! Here is an Unofficial MyAnimeList API in response to the MyAnimeList's 
 ## To install
 
 All you need to do is import the mal-api.py file into any Python 3 project.
+
+```python
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
