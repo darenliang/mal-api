@@ -14,8 +14,11 @@ Make sure that your Python 3 distributions has access to these libraries.
 
 ```
 numpy
-BeautifulSoup
+# pip Installer: pip install numpy
+beautifulsoup4
+# pip Installer: pip install beautifulsoup4
 requests
+# pip Installer: pip install requests
 ```
 
 Example:
