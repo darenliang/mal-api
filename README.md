@@ -1,7 +1,5 @@
 # mal-api
 
-Comprehensive MyAnimeList WebScraper API
-
 Welcome! Here is an Unofficial MyAnimeList API in response to the MyAnimeList's API shutdown.
 
 Hold on, this API is in early stages. Future updates may support more features and manga support.
