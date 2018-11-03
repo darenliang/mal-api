@@ -8,6 +8,52 @@ from bs4 import BeautifulSoup
 
 import stats
 
+genres_suffix = {
+    "Action": "genre/1/Action",
+    "Adventure": "genre/2/Adventure",
+    "Cars": "genre/3/Cars",
+    "Comedy": "genre/4/Comedy",
+    "Dementia": "genre/5/Dementia",
+    "Demons": "genre/6/Demons",
+    "Mystery": "genre/7/Mystery",
+    "Drama": "genre/8/Drama",
+    "Ecchi": "genre/9/Ecchi",
+    "Fantasy": "genre/10/Fantasy",
+    "Game": "genre/11/Game",
+    "Hentai": "genre/12/Hentai",
+    "Historical": "genre/13/Historical",
+    "Horror": "genre/14/Horror",
+    "Kids": "genre/15/Kids",
+    "Magic": "genre/16/Magic",
+    "Martial Arts": "genre/17/Martial_Arts",
+    "Mecha": "genre/18/Mecha",
+    "Music": "genre/19/Music",
+    "Parody": "genre/20/Parody",
+    "Samurai": "genre/21/Samurai",
+    "Romance": "genre/22/Romance",
+    "School": "genre/23/School",
+    "Sci-Fi": "genre/24/Sci-Fi",
+    "Shoujo": "genre/25/Shoujo",
+    "Shoujo Ai": "genre/26/Shoujo_Ai",
+    "Shounen": "genre/27/Shounen",
+    "Shounen Ai": "genre/28/Shounen_Ai",
+    "Space": "genre/29/Space",
+    "Sports": "genre/30/Sports",
+    "Super Power": "genre/31/Super_Power",
+    "Vampire": "genre/32/Vampire",
+    "Yaoi": "genre/33/Yaoi",
+    "Yuri": "genre/34/Yuri",
+    "Harem": "genre/35/Harem",
+    "Slice of Life": "genre/36/Slice_of_Life",
+    "Supernatural": "genre/37/Supernatural",
+    "Military": "genre/38/Military",
+    "Police": "genre/39/Police",
+    "Psychological": "genre/40/Psychological",
+    "Thriller": "genre/41/Thriller",
+    "Seinen": "genre/42/Seinen",
+    "Josei": "genre/43/Josei",
+}
+
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 regex = re.compile(
     r'^(?:http|ftp)s?://'
@@ -28,6 +74,12 @@ def get_anime_url(s):
     page_link = 'https://myanimelist.net/search/all?q=' + s
     page_content = parse_url(page_link)
     return page_content.find(id="anime").findNext('a').get('href')
+
+
+def get_anime_name(s):
+    page_link = s
+    page_content = parse_url(page_link)
+    return page_content.find("span", itemprop="name").text
 
 
 def url_select_parse(s):
@@ -201,6 +253,14 @@ def get_anime_favorites(s):
     if key not in page_content.text:
         return None
     return int(locale.atoi(page_content.find(text=key).next.strip(" \n")))
+
+
+def get_anime_synopsis(s):
+    key = "Synopsis"
+    page_content = url_select_parse(s)
+    if key not in page_content.text:
+        return None
+    return page_content.find("span", itemprop="description").text
 
 
 def get_anime_adaptation(s):
@@ -461,3 +521,196 @@ def get_anime_deviation(s):
         extract = re.search('sub(.*) votes', temp)
         freq.append(int(extract.group(1)))
     return stats.std_(vals, freq)
+
+
+def get_topanime(n):
+    page_content = parse_url("https://myanimelist.net/topanime.php?limit=" + str(n - 1))
+    return page_content.find("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"}).text
+
+
+def get_topairing(n):
+    page_content = parse_url("https://myanimelist.net/topanime.php?type=airing&limit=" + str(n - 1))
+    return page_content.find("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"}).text
+
+
+def get_topupcoming(n):
+    page_content = parse_url("https://myanimelist.net/topanime.php?type=upcoming&limit=" + str(n - 1))
+    return page_content.find("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"}).text
+
+
+def get_toptv(n):
+    page_content = parse_url("https://myanimelist.net/topanime.php?type=tv&limit=" + str(n - 1))
+    return page_content.find("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"}).text
+
+
+def get_topmovie(n):
+    page_content = parse_url("https://myanimelist.net/topanime.php?type=movie&limit=" + str(n - 1))
+    return page_content.find("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"}).text
+
+
+def get_topova(n):
+    page_content = parse_url("https://myanimelist.net/topanime.php?type=ova&limit=" + str(n - 1))
+    return page_content.find("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"}).text
+
+
+def get_topspecial(n):
+    page_content = parse_url("https://myanimelist.net/topanime.php?type=special&limit=" + str(n - 1))
+    return page_content.find("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"}).text
+
+
+def get_mostpopular(n):
+    page_content = parse_url("https://myanimelist.net/topanime.php?type=bypopularity&limit=" + str(n - 1))
+    return page_content.find("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"}).text
+
+
+def get_mostfavorite(n):
+    page_content = parse_url("https://myanimelist.net/topanime.php?type=favorite&limit=" + str(n - 1))
+    return page_content.find("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"}).text
+
+
+def get_toplist_name(l, s, f):
+    if '?' in l:
+        c = '&'
+    else:
+        c = '?'
+    names = []
+    while True:
+        page_content = parse_url("https://myanimelist.net/" + l + c + "limit=" + str(s - 1))
+        ranks = page_content.findAll("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"})
+        for i in range(50):
+            names.append(ranks[i].text)
+            s += 1
+            if s > f - 1:
+                return names
+
+
+def get_toplist_url(l, s, f):
+    if '?' in l:
+        c = '&'
+    else:
+        c = '?'
+    url = []
+    while True:
+        page_content = parse_url("https://myanimelist.net/" + l + c + "limit=" + str(s - 1))
+        ranks = page_content.findAll("a", {"class": "hoverinfo_trigger fl-l fs14 fw-b"})
+        for i in range(50):
+            url.append(ranks[i]['href'])
+            s += 1
+            if s > f - 1:
+                return url
+
+
+def get_genre_name(l, s, f):
+    if l in genres_suffix:
+        l = genres_suffix.get(l)
+    else:
+        return None
+    sp = (s // 100) + 1
+    ind = (s % 100) - 1
+    names = []
+    while True:
+        page_content = parse_url('https://myanimelist.net/anime/' + l + '?page=' + str(sp))
+        ranks = page_content.findAll("a", {"class": "link-title"})
+        for i in range(ind, 100):
+            names.append(ranks[i].text)
+            s += 1
+            if s > f - 1:
+                return names
+        sp += 1
+
+
+def get_genre_url(l, s, f):
+    if l in genres_suffix:
+        l = genres_suffix.get(l)
+    else:
+        return None
+    sp = (s // 100) + 1
+    ind = (s % 100) - 1
+    names = []
+    while True:
+        page_content = parse_url('https://myanimelist.net/anime/' + l + '?page=' + str(sp))
+        ranks = page_content.findAll("a", {"class": "link-title"})
+        for i in range(ind, 100):
+            names.append(ranks[i]['href'])
+            s += 1
+            if s > f - 1:
+                return names
+        sp += 1
+
+
+def get_key_name(l, s, f):
+    sp = (s // 100) + 1
+    ind = (s % 100) - 1
+    names = []
+    while True:
+        page_content = parse_url('https://myanimelist.net/' + l + '?page=' + str(sp))
+        ranks = page_content.findAll("a", {"class": "link-title"})
+        for i in range(ind, 100):
+            names.append(ranks[i].text)
+            s += 1
+            if s > f - 1:
+                return names
+        sp += 1
+
+
+def get_key_url(l, s, f):
+    sp = (s // 100) + 1
+    ind = (s % 100) - 1
+    urls = []
+    while True:
+        page_content = parse_url('https://myanimelist.net/' + l + '?page=' + str(sp))
+        ranks = page_content.findAll("a", {"class": "link-title"})
+        for i in range(ind, 100):
+            urls.append(ranks[i]['href'])
+            s += 1
+            if s > f - 1:
+                return urls
+        sp += 1
+
+
+def get_custom_name(l, s, f):
+    while True:
+        page_content = parse_url("https://myanimelist.net/" + l + "&show=" + str(s - 1))
+        ranks = page_content.findAll("a", {"class": "hoverinfo_trigger fw-b fl-l"})
+        names = []
+        for i in range(50):
+            names.append(ranks[i].text)
+            s += 1
+            if s > f - 1:
+                return names
+
+
+def get_custom_url(l, s, f):
+    while True:
+        page_content = parse_url("https://myanimelist.net/" + l + "&show=" + str(s - 1))
+        ranks = page_content.findAll("a", {"class": "hoverinfo_trigger fw-b fl-l"})
+        urls = []
+        for i in range(50):
+            urls.append(ranks[i]['href'])
+            s += 1
+            if s > f - 1:
+                return urls
+
+
+def get_season_name(l):
+    l = l.split()
+    year = l[1]
+    season = l[0].lower()
+    names = []
+    page_content = parse_url('https://myanimelist.net/anime/season/' + year + '/' + season)
+    ranks = page_content.findAll("a", {"class": "link-title"})
+    for i in range(len(ranks)):
+        names.append(ranks[i].text)
+    return names
+
+
+def get_season_url(l):
+    l = l.split()
+    year = l[1]
+    season = l[0].lower()
+    urls = []
+    page_content = parse_url('https://myanimelist.net/anime/season/' + year + '/' + season)
+    ranks = page_content.findAll("a", {"class": "link-title"})
+    for i in range(len(ranks)):
+        urls.append(ranks[i]['href'])
+    return urls
