@@ -8,7 +8,15 @@ Hold on, this API is in early stages. Future updates may support more features a
 
 ## To install
 
-All you need to do is import the mal-api.py file into any Python 3 project. Also make sure that you have beautifulsoup4 installed.
+All you need to do is import the mal-api.py file into any Python 3 project.
+
+Make sure that your Python 3 distributions has access to these libraries.
+
+```
+numpy
+BeautifulSoup
+requests
+```
 
 Example:
 ```python
