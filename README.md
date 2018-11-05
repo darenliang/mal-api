@@ -21,9 +21,9 @@ requests
 
 Example:
 ```python
-import mal-api
+import mal_api
 
-print(mal-api.get_anime_score("Made in Abyss"))
+print(mal_api.get_anime_score("Made in Abyss"))
 # prints 8.89
 ```
 
