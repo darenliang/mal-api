@@ -286,7 +286,7 @@ Valid Categories:
 
 Using the discord-anime-bot is simple:
 
-Prefixes are ? and !.
+Prefixes are ? and !
 
 Call functions listed above, but in this format:
 - !get_anime_score str
