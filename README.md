@@ -295,3 +295,4 @@ Call functions listed above, but in this format:
 Some new functions you can use:
 - !get_anime_info
 - !get_anime_polarization
+- !get_random_anime
