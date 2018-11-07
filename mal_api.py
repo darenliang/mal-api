@@ -109,7 +109,7 @@ def get_anime_episodes(s):
     page_content = url_select_parse(s)
     if key not in page_content.text:
         return None
-    return int(page_content.find(text=key).next)
+    return str(page_content.find(text=key).next)
 
 
 def get_anime_status(s):
