@@ -714,3 +714,10 @@ def get_season_url(l):
     for i in range(len(ranks)):
         urls.append(ranks[i]['href'])
     return urls
+
+def get_trending_anime():
+    page_content = parse_url('https://myanimelist.net/')
+    data = page_content.findAll("span", class_="title")
+    for i in range(20):
+        data[i] = data[i].text
+    return data
