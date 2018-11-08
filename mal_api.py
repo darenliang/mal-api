@@ -1,7 +1,6 @@
 import locale
 import os
 import re
-import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -66,7 +65,6 @@ regex = re.compile(
 
 def parse_url(s):
     page_response = requests.get(s, timeout=5)
-    time.sleep(1)
     return BeautifulSoup(page_response.content, "html.parser")
 
 
@@ -74,6 +72,12 @@ def get_anime_url(s):
     page_link = 'https://myanimelist.net/search/all?q=' + s
     page_content = parse_url(page_link)
     return page_content.find(id="anime").findNext('a').get('href')
+
+
+def get_anime_image(s):
+    page_content = url_select_parse(s)
+    image = page_content.find('img', class_="ac")['src']
+    return image
 
 
 def get_anime_name(s):
@@ -109,7 +113,7 @@ def get_anime_episodes(s):
     page_content = url_select_parse(s)
     if key not in page_content.text:
         return None
-    return int(page_content.find(text=key).next)
+    return str(page_content.find(text=key).next)
 
 
 def get_anime_status(s):
@@ -220,7 +224,7 @@ def get_anime_score(s):
     page_content = url_select_parse(s)
     if key not in page_content.text:
         return None
-    return float(page_content.find(text=key).next.next.text)
+    return str(page_content.find(text=key).next.next.text)
 
 
 def get_anime_rank(s):
@@ -228,7 +232,7 @@ def get_anime_rank(s):
     page_content = url_select_parse(s)
     if key not in page_content.text:
         return None
-    return int((page_content.find(text=key).next.strip(" \n"))[1:])
+    return str((page_content.find(text=key).next.strip(" \n"))[1:])
 
 
 def get_anime_popularity(s):
@@ -236,7 +240,7 @@ def get_anime_popularity(s):
     page_content = url_select_parse(s)
     if key not in page_content.text:
         return None
-    return int((page_content.find(text=key).next.strip(" \n"))[1:])
+    return str((page_content.find(text=key).next.strip(" \n"))[1:])
 
 
 def get_anime_members(s):
@@ -244,7 +248,7 @@ def get_anime_members(s):
     page_content = url_select_parse(s)
     if key not in page_content.text:
         return None
-    return int(locale.atoi(page_content.find(text=key).next.strip(" \n")))
+    return str(locale.atoi(page_content.find(text=key).next.strip(" \n")))
 
 
 def get_anime_favorites(s):
@@ -252,7 +256,7 @@ def get_anime_favorites(s):
     page_content = url_select_parse(s)
     if key not in page_content.text:
         return None
-    return int(locale.atoi(page_content.find(text=key).next.strip(" \n")))
+    return str(locale.atoi(page_content.find(text=key).next.strip(" \n")))
 
 
 def get_anime_synopsis(s):
@@ -714,6 +718,7 @@ def get_season_url(l):
     for i in range(len(ranks)):
         urls.append(ranks[i]['href'])
     return urls
+
 
 def get_trending_anime():
     page_content = parse_url('https://myanimelist.net/')
