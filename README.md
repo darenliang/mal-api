@@ -166,7 +166,7 @@ get_anime_scoredist(str) > list(list)
 get_anime_deviation(str) > float
 # returns anime score deviation
 
-get_anime_trending(n) > list
+get_anime_trending() > list
 # returns list of trending anime (only 20 anime)
 
 get_topanime(n) > str
