@@ -2,7 +2,7 @@
 
 Welcome! Here is an Unofficial MyAnimeList API in response to the MyAnimeList's API shutdown.
 
-Hold on, this API is in early stages. Future updates may support more features and manga support.
+Hold on, this API is in early stages and is very unstable. Future updates may support more features and manga support.
 
 ## To install
 
