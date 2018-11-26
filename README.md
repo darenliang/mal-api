@@ -1,4 +1,4 @@
-# mal-api
+# Unofficial Python Mal Api
 
 Welcome! Here is an Unofficial MyAnimeList API in response to the MyAnimeList's API shutdown.
 
