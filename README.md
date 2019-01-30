@@ -4,6 +4,8 @@ Welcome! Here is an Unofficial MyAnimeList API in response to the MyAnimeList's 
 
 Hold on, this API is in early stages and is very unstable. Future updates may support more features and manga support.
 
+This API has its issues. I will hopefully clean up the API to make it more easy to use.
+
 ## To install
 
 All you need to do is import the mal-api.py file into any Python 3 project.
