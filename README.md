@@ -6,6 +6,10 @@ Hold on, this API is in early stages and is very unstable. Future updates may su
 
 This API has its issues. I will hopefully clean up the API to make it more easy to use.
 
+## Future updates
+
+A new version of the mal-api is on its way. It will be much easier and faster to use. Stay tuned for updates.
+
 ## To install
 
 All you need to do is import the mal-api.py file into any Python 3 project.
