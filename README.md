@@ -1,4 +1,4 @@
-# Unofficial Python Mal Api
+# Unofficial Python Mal API
 
 Welcome! Here is an Unofficial MyAnimeList API in response to the MyAnimeList's API shutdown.
 
@@ -6,7 +6,7 @@ Hold on, this API is in early stages and is very unstable. Future updates may su
 
 This API has its issues. I will hopefully clean up the API to make it more easy to use.
 
-## Future updates
+## Future updates!
 
 A new version of the mal-api is on its way. It will be much easier and faster to use. Stay tuned for updates.
 
