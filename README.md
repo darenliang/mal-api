@@ -19,11 +19,22 @@ requests
 # pip Installer: pip install requests
 ```
 
-Example:
+Example (New API, Recommended):
 ```python
-import mal_api
+from mal_api_new import Anime
 
-print(mal_api.get_anime_score("Made in Abyss"))
+anime = Anime(34599)
+# Made in Abyss
+
+print(anime.score)
+# prints 8.89
+```
+
+Example (Old API):
+```python
+import mal_api_old
+
+print(mal_api_old.get_anime_score("Made in Abyss"))
 # prints 8.89
 ```
 
