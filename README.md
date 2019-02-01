@@ -4,12 +4,6 @@ Welcome! Here is an Unofficial MyAnimeList API in response to the MyAnimeList's 
 
 Hold on, this API is in early stages and is very unstable. Future updates may support more features and manga support.
 
-This API has its issues. I will hopefully clean up the API to make it more easy to use.
-
-## Future updates!
-
-A new version of the mal-api is on its way. It will be much easier and faster to use. Stay tuned for updates.
-
 ## To install
 
 All you need to do is import the mal-api.py file into any Python 3 project.
@@ -33,9 +27,66 @@ print(mal_api.get_anime_score("Made in Abyss"))
 # prints 8.89
 ```
 
-## API Documentation
+## New API Documentation
 
-Currently, there are 63 API functions implemented in mal-api.
+To call the API, you need the anime's id number from MyAnimeList.
+
+```python
+How to initialize an anime
+
+anime = Anime(1)
+# Cowboy Bebop
+
+List of properties:
+
+Anime.name
+Anime.image
+Anime.type
+Anime.episodes
+Anime.status
+Anime.aired
+Anime.premiered
+Anime.broadcast
+Anime.producers
+Anime.licensors
+Anime.studios
+Anime.source
+Anime.genres
+Anime.duration
+Anime.rating
+Anime.score
+Anime.rank
+Anime.popularity
+Anime.members
+Anime.favorites
+Anime.synopsis
+Anime.adaptation
+Anime.sidestory
+Anime.alternative
+Anime.sequel
+Anime.prequel
+Anime.summary
+Anime.other
+Anime.spinoff
+Anime.character
+Anime.version
+Anime.maincast
+Anime.staff
+Anime.op
+Anime.ed
+Anime.watching
+Anime.completed
+Anime.onhold
+Anime.dropped
+Anime.total
+Anime.ptw
+Anime.scoredist
+Anime.deviation
+```
+
+## Old API Documentation (mal_api_old.py)
+
+If possible, please use the new version.
 
 To call an API, you need either the anime's name or the MAL base url of an anime.
 
