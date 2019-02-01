@@ -6,7 +6,7 @@ Hold on, this API is in early stages and is very unstable. Future updates may su
 
 ## To install
 
-All you need to do is import the mal-api.py file into any Python 3 project.
+All you need to do is import the mal_api_new.py or mal_api_old.py file into any Python 3 project.
 
 Make sure that your Python 3 distributions has access to these libraries.
 
