@@ -10,7 +10,7 @@ import stats
 
 def parse_url(s):
     page_response = requests.get(s, timeout=5)
-    return BeautifulSoup(page_response.content, "html.parser")
+    return BeautifulSoup(page_response.content, "lxml")
 
 
 class Anime:
