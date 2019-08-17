@@ -78,7 +78,7 @@ class Anime:
             for i in temp:
                 if i != '\n':
                     no_whitespace += i
-            status = re.search('</span>  (.*)  </div>', no_whitespace)
+            status = re.search('</span> {2}(.*) {2}</div>', no_whitespace)
             self._status = status.group(1)
         return self._status
 
@@ -444,7 +444,6 @@ class Anime:
             inc = 0
             for i in range(len(tempop)):
                 tempop2.append(tempop[i].text)
-            print(tempop2)
             if tempop2[0][0] != '#':
                 return [tempop2[0]]
             for i in range(len(tempop2)):
@@ -470,7 +469,6 @@ class Anime:
             index = 0
             for i in range(len(temped)):
                 temped2.append(temped[i].text)
-            print(temped2)
             if temped2[-1][0] != '#':
                 return [temped2[-1]]
             if temped2[0][0] != '#':
