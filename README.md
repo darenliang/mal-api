@@ -24,8 +24,13 @@ print(anime.score) # prints 8.82
 
 List of properties:
 ```
-Anime.name
-Anime.image
+Anime.mal_id
+Anime.title
+Anime.title_english
+Anime.title_japanese
+Anime.title_synonyms
+Anime.url
+Anime.image_url
 Anime.type
 Anime.episodes
 Anime.status
@@ -40,77 +45,14 @@ Anime.genres
 Anime.duration
 Anime.rating
 Anime.score
+Anime.scored_by
 Anime.rank
 Anime.popularity
 Anime.members
 Anime.favorites
 Anime.synopsis
-Anime.adaptation
-Anime.sidestory
-Anime.alternative
-Anime.sequel
-Anime.prequel
-Anime.summary
-Anime.other
-Anime.spinoff
-Anime.character
-Anime.version
-Anime.maincast
-Anime.staff
-Anime.op
-Anime.ed
-Anime.watching
-Anime.completed
-Anime.onhold
-Anime.dropped
-Anime.total
-Anime.ptw
-Anime.scoredist
-Anime.deviation
+Anime.background
+Anime.related_anime
+Anime.opening_themes
+Anime.ending_themes
 ```
-Formats for genres
-
-Valid Categories:
-- Action
-- Adventure
-- Cars
-- Comedy
-- Dementia
-- Demons
-- Drama
-- Ecchi
-- Fantasy
-- Game
-- Harem
-- Hentai
-- Historical
-- Horror
-- Josei
-- Kids
-- Magic
-- Martial Arts
-- Mecha
-- Military
-- Music
-- Mystery
-- Parody
-- Police
-- Psychological
-- Romance
-- Samurai
-- School
-- Sci-Fi
-- Seinen
-- Shoujo
-- Shoujo Ai
-- Shounen
-- Shounen Ai
-- Slice of Life
-- Space
-- Sports
-- Super Power
-- Supernatural
-- Thriller
-- Vampire
-- Yaoi
-- Yuri
