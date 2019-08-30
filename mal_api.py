@@ -1,57 +1,140 @@
-import locale
-import os
 import re
 
 import requests
 from bs4 import BeautifulSoup
 
-import stats
-
-
-def parse_url(s):
-    page_response = requests.get(s, timeout=5)
-    return BeautifulSoup(page_response.content, "lxml")
+import config
 
 
 class Anime:
     def __init__(self, id):
-        self._id = id
-        self._url = "https://myanimelist.net/anime/" + str(id)
-        self._page = self.parse_url(self._url)
-        if self._page.find('title').text.strip() == "404 Not Found - MyAnimeList.net":
+        self._mal_id = id
+        self._url = config.ANIME_ENDPOINT + str(self._mal_id)
+        self._page = self._parse_url(self._url)
+        title = self._page.find("meta", property="og:title")["content"]
+        if title == config.NOT_FOUND_TITLE:
             raise ValueError("No such anime id on MyAnimeList")
         else:
-            self._page_stats = self.parse_url(self._page.find('a', href=re.compile('/stats$'))['href'])
+            self._title = title
+            url = self._page.find("meta", property="og:url")["content"]
+            self._url = url
+            self._page_stats = self._parse_url(url + "/stats")
+            self._border_spans = self._page.find("td", {'class': 'borderClass'}).findChildren("span",
+                                                                                              {'class': 'dark_text'})
 
-    def parse_url(self, url):
+    def _parse_url(self, url):
         page_response = requests.get(url, timeout=5)
-        return BeautifulSoup(page_response.content, "html.parser")
+        return BeautifulSoup(page_response.content, "lxml")
+
+    def _get_span_text(self, page, key, typing, bypass_link=False):
+        for span in page:
+            if span.get_text() == key:
+                first_link = span.parent.a
+                if first_link and not bypass_link:
+                    if typing == str:
+                        return first_link.text
+                    if typing == list:
+                        return [link.get_text() for link in span.parent.findChildren("a")]
+                else:
+                    results = span.parent.findChildren(text=True, recursive=True)
+                    result = results[results.index(key) + 1].strip()
+                    if result == "Unknown":
+                        return None
+                    else:
+                        if typing == int:
+                            return int(re.sub('[^0-9]', '', result))
+                        if typing == str:
+                            return result
+                        if typing == list:
+                            return [element.strip() for element in result.split(",")]
+        if typing == list:
+            return []
+        return None
+
+    def _get_itemprop_span_value(self, page, itemprop, typing):
+        result = page.find("span", itemprop=itemprop).text
+        if result:
+            if typing == int or typing == float:
+                return typing(re.sub('[^0-9.]', '', page.find("span", itemprop=itemprop).text))
+            elif typing == str:
+                return page.find("span", itemprop=itemprop).text.replace('\n', ' ').replace('\r', '').strip()
+        else:
+            return None
+
+    def _get_related_anime(self):
+        data = {}
+        rows = self._page.find("td", {'class': 'pb24'}).table.findChildren("tr")
+        for row in rows:
+            data[row.td.text[:-1]] = [link.get_text() for link in row.findChildren("a")]
+        return data
+
+    def _get_op_ed(self, option):
+        themes = []
+        if option == "op":
+            data = self._page.find("div", {'class': 'opnening'}).parent
+        else:
+            data = self._page.find("div", {'class': 'ending'}).parent
+        data = data.findChildren("span", {'class': 'theme-song'})
+        if data:
+            if len(data) > 1:
+                for theme in data:
+                    themes.append(theme.text[4:])
+            else:
+                themes = [data[0].text]
+            return themes
+        else:
+            return None
 
     @property
-    def name(self):
-        try:
-            self._name
-        except AttributeError:
-            self._name = self._page.find("span", itemprop="name").text
-        return self._name
+    def mal_id(self):
+        return self._mal_id
 
     @property
-    def image(self):
+    def title(self):
+        return self._title
+
+    @property
+    def title_english(self):
         try:
-            self._image
+            self._title_english
         except AttributeError:
-            self._image = self._page.find('img', class_="ac")['src']
-        return self._image
+            self._title_english = self._get_span_text(self._border_spans, "English:", str)
+        return self._title_english
+
+    @property
+    def title_japanese(self):
+        try:
+            self._title_japanese
+        except AttributeError:
+            self._title_japanese = self._get_span_text(self._border_spans, "Japanese:", str)
+        return self._title_japanese
+
+    @property
+    def title_synonyms(self):
+        try:
+            self._title_synonyms
+        except AttributeError:
+            self._title_synonyms = self._get_span_text(self._border_spans, "Synonyms:", list)
+        return self._title_synonyms
+
+    @property
+    def url(self):
+        return self._url
+
+    @property
+    def image_url(self):
+        try:
+            self._image_url
+        except AttributeError:
+            self._image_url = self._page.find("meta", property="og:image")["content"]
+        return self._image_url
 
     @property
     def type(self):
         try:
             self._type
         except AttributeError:
-            key = "Type:"
-            if key not in self._page.text:
-                return None
-            self._type = self._page.find(text=key).findNext('a').text
+            self._type = self._get_span_text(self._border_spans, "Type:", str)
         return self._type
 
     @property
@@ -59,10 +142,7 @@ class Anime:
         try:
             self._episodes
         except AttributeError:
-            key = "Episodes:"
-            if key not in self._page.text:
-                return None
-            self._episodes = re.sub(r'\W+', '', str(self._page.find(text=key).next))
+            self._episodes = self._get_span_text(self._border_spans, "Episodes:", int)
         return self._episodes
 
     @property
@@ -70,16 +150,7 @@ class Anime:
         try:
             self._status
         except AttributeError:
-            key = "Status:"
-            if key not in self._page.text:
-                return None
-            temp = str(self._page.find('span', text=key).parent)
-            no_whitespace = ''
-            for i in temp:
-                if i != '\n':
-                    no_whitespace += i
-            status = re.search('</span> {2}(.*) {2}</div>', no_whitespace)
-            self._status = status.group(1)
+            self._status = self._get_span_text(self._border_spans, "Status:", str)
         return self._status
 
     @property
@@ -87,10 +158,7 @@ class Anime:
         try:
             self._aired
         except AttributeError:
-            key = "Aired:"
-            if key not in self._page.text:
-                return None
-            self._aired = self._page.find(text=key).next.strip(" \n")
+            self._aired = self._get_span_text(self._border_spans, "Aired:", str)
         return self._aired
 
     @property
@@ -98,10 +166,7 @@ class Anime:
         try:
             self._premiered
         except AttributeError:
-            key = "Premiered:"
-            if key not in self._page.text:
-                return None
-            self._premiered = self._page.find(text=key).findNext('a').text
+            self._premiered = self._get_span_text(self._border_spans, "Premiered:", str)
         return self._premiered
 
     @property
@@ -109,10 +174,7 @@ class Anime:
         try:
             self._broadcast
         except AttributeError:
-            key = "Broadcast:"
-            if key not in self._page.text:
-                return None
-            self._broadcast = self._page.find(text=key).next.strip(" \n")
+            self._broadcast = self._get_span_text(self._border_spans, "Broadcast:", str)
         return self._broadcast
 
     @property
@@ -120,12 +182,7 @@ class Anime:
         try:
             self._producers
         except AttributeError:
-            key = "Producers:"
-            if key not in self._page.text:
-                return None
-            self._producers = self._page.find(text=key).parent.parent.findAll('a')
-            for i in range(len(self._producers)):
-                self._producers[i] = self._producers[i].text
+            self._producers = self._get_span_text(self._border_spans, "Producers:", list)
         return self._producers
 
     @property
@@ -133,12 +190,7 @@ class Anime:
         try:
             self._licensors
         except AttributeError:
-            key = "Licensors:"
-            if key not in self._page.text:
-                return None
-            self._licensors = self._page.find(text=key).parent.parent.findAll('a')
-            for i in range(len(self._licensors)):
-                self._licensors[i] = self._licensors[i].text
+            self._licensors = self._get_span_text(self._border_spans, "Licensors:", list)
         return self._licensors
 
     @property
@@ -146,10 +198,7 @@ class Anime:
         try:
             self._studios
         except AttributeError:
-            key = "Studios:"
-            if key not in self._page.text:
-                return None
-            self._studios = self._page.find(text=key).findNext('a').text
+            self._studios = self._get_span_text(self._border_spans, "Studios:", list)
         return self._studios
 
     @property
@@ -157,10 +206,7 @@ class Anime:
         try:
             self._source
         except AttributeError:
-            key = "Source:"
-            if key not in self._page.text:
-                return None
-            self._source = self._page.find(text=key).next.strip(" \n")
+            self._source = self._get_span_text(self._border_spans, "Source:", str)
         return self._source
 
     @property
@@ -168,12 +214,7 @@ class Anime:
         try:
             self._genres
         except AttributeError:
-            key = "Genres:"
-            if key not in self._page.text:
-                return None
-            self._genres = self._page.find(text=key).parent.parent.findAll('a')
-            for i in range(len(self._genres)):
-                self._genres[i] = self._genres[i].text
+            self._genres = self._get_span_text(self._border_spans, "Genres:", list)
         return self._genres
 
     @property
@@ -181,10 +222,7 @@ class Anime:
         try:
             self._duration
         except AttributeError:
-            key = "Duration:"
-            if key not in self._page.text:
-                return None
-            self._duration = self._page.find(text=key).next.strip(" \n")
+            self._duration = self._get_span_text(self._border_spans, "Duration:", str)
         return self._duration
 
     @property
@@ -192,10 +230,7 @@ class Anime:
         try:
             self._rating
         except AttributeError:
-            key = "Rating:"
-            if key not in self._page.text:
-                return None
-            self._rating = self._page.find(text=key).next.strip(" \n")
+            self._rating = self._get_span_text(self._border_spans, "Rating:", str)
         return self._rating
 
     @property
@@ -203,21 +238,23 @@ class Anime:
         try:
             self._score
         except AttributeError:
-            key = "Score:"
-            if key not in self._page.text:
-                return None
-            self._score = str(self._page.find(text=key).next.next.text)
+            self._score = self._get_itemprop_span_value(self._page, "ratingValue", float)
         return self._score
+
+    @property
+    def scored_by(self):
+        try:
+            self._scored_by
+        except AttributeError:
+            self._scored_by = self._get_itemprop_span_value(self._page, "ratingCount", int)
+        return self._scored_by
 
     @property
     def rank(self):
         try:
             self._rank
         except AttributeError:
-            key = "Ranked:"
-            if key not in self._page.text:
-                return None
-            self._rank = str((self._page.find(text=key).next.strip(" \n"))[1:])
+            self._rank = self._get_span_text(self._border_spans, "Ranked:", int, True)
         return self._rank
 
     @property
@@ -225,10 +262,7 @@ class Anime:
         try:
             self._popularity
         except AttributeError:
-            key = "Popularity:"
-            if key not in self._page.text:
-                return None
-            self._popularity = str((self._page.find(text=key).next.strip(" \n"))[1:])
+            self._popularity = self._get_span_text(self._border_spans, "Popularity:", int)
         return self._popularity
 
     @property
@@ -236,10 +270,7 @@ class Anime:
         try:
             self._members
         except AttributeError:
-            key = "Members:"
-            if key not in self._page.text:
-                return None
-            self._members = str(locale.atoi(self._page.find(text=key).next.strip(" \n")))
+            self._members = self._get_span_text(self._border_spans, "Members:", int)
         return self._members
 
     @property
@@ -247,10 +278,7 @@ class Anime:
         try:
             self._favorites
         except AttributeError:
-            key = "Favorites:"
-            if key not in self._page.text:
-                return None
-            self._favorites = str(locale.atoi(self._page.find(text=key).next.strip(" \n")))
+            self._favorites = self._get_span_text(self._border_spans, "Favorites:", int)
         return self._favorites
 
     @property
@@ -258,331 +286,42 @@ class Anime:
         try:
             self._synopsis
         except AttributeError:
-            key = "Synopsis"
-            if key not in self._page.text:
-                return None
-            self._synopsis = self._page.find("span", itemprop="description").text
+            self._synopsis = self._get_itemprop_span_value(self._page, "description", str)
         return self._synopsis
 
     @property
-    def adaptation(self):
+    def background(self):
         try:
-            self._adaptation
+            self._background
         except AttributeError:
-            key = "Adaptation:"
-            if key not in self._page.text:
-                return None
-            self._adaptation = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._adaptation)):
-                self._adaptation[i] = self._adaptation[i].text
-        return self._adaptation
-
-    @property
-    def sidestory(self):
-        try:
-            self._sidestory
-        except AttributeError:
-            key = "Side story:"
-            if key not in self._page.text:
-                return None
-            self._sidestory = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._sidestory)):
-                self._sidestory[i] = self._sidestory[i].text
-        return self._sidestory
-
-    @property
-    def alternative(self):
-        try:
-            self._alternative
-        except AttributeError:
-            key = "Alternative setting:"
-            if key not in self._page.text:
-                return None
-            self._alternative = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._alternative)):
-                self._alternative[i] = self._alternative[i].text
-        return self._alternative
-
-    @property
-    def sequel(self):
-        try:
-            self._sequel
-        except AttributeError:
-            key = "Sequel:"
-            if key not in self._page.text:
-                return None
-            self._sequel = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._sequel)):
-                self._sequel[i] = self._sequel[i].text
-        return self._sequel
-
-    @property
-    def summary(self):
-        try:
-            self._summary
-        except AttributeError:
-            key = "Summary:"
-            if key not in self._page.text:
-                return None
-            self._summary = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._summary)):
-                self._summary[i] = self._summary[i].text
-        return self._summary
-
-    @property
-    def other(self):
-        try:
-            self._other
-        except AttributeError:
-            key = "Other:"
-            if key not in self._page.text:
-                return None
-            self._other = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._other)):
-                self._other[i] = self._other[i].text
-        return self._other
-
-    @property
-    def prequel(self):
-        try:
-            self._prequel
-        except AttributeError:
-            key = "Prequel:"
-            if key not in self._page.text:
-                return None
-            self._prequel = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._prequel)):
-                self._prequel[i] = self._prequel[i].text
-        return self._prequel
-
-    @property
-    def spinoff(self):
-        try:
-            self._spinoff
-        except AttributeError:
-            key = "Spin-off:"
-            if key not in self._page.text:
-                return None
-            self._spinoff = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._spinoff)):
-                self._spinoff[i] = self._spinoff[i].text
-        return self._spinoff
-
-    @property
-    def character(self):
-        try:
-            self._character
-        except AttributeError:
-            key = "Character:"
-            if key not in self._page.text:
-                return None
-            self._character = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._character)):
-                self._character[i] = self._character[i].text
-        return self._character
-
-    @property
-    def version(self):
-        try:
-            self._version
-        except AttributeError:
-            key = "Alternative version:"
-            if key not in self._page.text:
-                return None
-            self._version = self._page.find(text=key).next.findAll('a')
-            for i in range(len(self._version)):
-                self._version[i] = self._version[i].text
-        return self._version
-
-    @property
-    def maincast(self):
-        try:
-            self._maincast
-        except AttributeError:
-            key = "Characters & Voice Actors"
-            if key not in self._page.text:
-                return None
-            cast = os.linesep.join([s for s in self._page.find(text=key).next.text.splitlines() if s])
-            tempcast = cast.split("\n")
-            for i in range(len(tempcast)):
-                tempcast[i] = tempcast[i].replace('\r', '')
-                self._maincast = []
-            for i in range(0, len(tempcast), 4):
-                self._maincast.append([tempcast[i], tempcast[i + 1], tempcast[i + 2], tempcast[i + 3]])
-        return self._maincast
-
-    @property
-    def staff(self):
-        try:
-            self._staff
-        except AttributeError:
-            key = "More staff"
-            if key not in self._page.text:
-                return None
-            staff = os.linesep.join([s for s in self._page.find(text=key,
-                                                                class_="floatRightHeader").next.next.next.next.next.text.splitlines()
-                                     if s])
-            tempstaff = staff.split("\n")
-            for i in range(len(tempstaff)):
-                tempstaff[i] = tempstaff[i].replace('\r', '')
-            self._staff = []
-            for i in range(0, len(tempstaff), 2):
-                self._staff.append([tempstaff[i], tempstaff[i + 1]])
-        return self._staff
-
-    @property
-    def op(self):
-        try:
-            self._op
-        except AttributeError:
-            key = "No opening themes have been added to this title."
-            if key in self._page.text:
-                return None
-            tempop = self._page.findAll(class_="theme-song")
-            tempop2 = []
-            self._op = []
-            inc = 0
-            for i in range(len(tempop)):
-                tempop2.append(tempop[i].text)
-            if tempop2[0][0] != '#':
-                return [tempop2[0]]
-            for i in range(len(tempop2)):
-                if tempop2[i][1].isdigit() and inc < int(tempop2[i][1]):
-                    inc = int(tempop2[i][1])
-                    self._op.append(tempop[i].text)
-                else:
-                    return self._op
-        return self._op
-
-    @property
-    def ed(self):
-        try:
-            self._ed
-        except AttributeError:
-            key = "No ending themes have been added to this title."
-            if key in self._page.text:
-                return None
-            temped = self._page.findAll(class_="theme-song")
-            temped2 = []
-            self._ed = []
-            inc = 0
-            index = 0
-            for i in range(len(temped)):
-                temped2.append(temped[i].text)
-            if temped2[-1][0] != '#':
-                return [temped2[-1]]
-            if temped2[0][0] != '#':
-                index = 1
+            raw_string = self._page.find("h2", {'style': "margin-top: 15px;"}).parent.text
+            result = raw_string[raw_string.index("EditBackground") + 14:].replace("\n", " ").replace("\r", "").strip()
+            if result == config.NO_BACKGROUND_INFO:
+                self._background = None
             else:
-                for i in range(1, len(temped2)):
-                    if temped2[i][1].isdigit():
-                        index += 1
-                    else:
-                        break
-            for i in range(index, len(temped2)):
-                if temped2[i][1].isdigit() and inc < int(temped2[i][1]):
-                    inc = int(temped2[i][1])
-                    self._ed.append(temped[i].text)
-                else:
-                    return self._ed
-        return self._ed
+                self._background = result
+        return self._background
 
     @property
-    def watching(self):
+    def related_anime(self):
         try:
-            self._watching
+            self._related_anime
         except AttributeError:
-            key = "Watching:"
-            if key not in self._page_stats.text:
-                return None
-            self._watching = int(locale.atoi(self._page_stats.find(text=key).next))
-        return self._watching
+            self._related_anime = self._get_related_anime()
+        return self._related_anime
 
     @property
-    def completed(self):
+    def opening_themes(self):
         try:
-            self._completed
+            self._opening_themes
         except AttributeError:
-            key = "Completed:"
-            if key not in self._page_stats.text:
-                return None
-            self._completed = int(locale.atoi(self._page_stats.find(text=key).next))
-        return self._completed
+            self._opening_themes = self._get_op_ed("op")
+        return self._opening_themes
 
     @property
-    def onhold(self):
+    def ending_themes(self):
         try:
-            self._onhold
+            self._ending_themes
         except AttributeError:
-            key = "On-Hold:"
-            if key not in self._page_stats.text:
-                return None
-            self._onhold = int(locale.atoi(self._page_stats.find(text=key).next))
-        return self._onhold
-
-    @property
-    def dropped(self):
-        try:
-            self._dropped
-        except AttributeError:
-            key = "Dropped:"
-            if key not in self._page_stats.text:
-                return None
-            self._dropped = int(locale.atoi(self._page_stats.find(text=key).next))
-        return self._dropped
-
-    @property
-    def total(self):
-        try:
-            self._total
-        except AttributeError:
-            key = "Total:"
-            if key not in self._page_stats.text:
-                return None
-            self._total = int(locale.atoi(self._page_stats.find(text=key).next))
-        return self._total
-
-    @property
-    def ptw(self):
-        try:
-            self._ptw
-        except AttributeError:
-            key = "Plan to Watch:"
-            if key not in self._page_stats.text:
-                return None
-            self._ptw = int(locale.atoi(self._page_stats.find(text=key).next))
-        return self._ptw
-
-    @property
-    def scoredist(self):
-        try:
-            self._scoredist
-        except AttributeError:
-            key = "Score Stats"
-            if key not in self._page_stats.text:
-                return None
-            scoredist = os.linesep.join(
-                [s for s in self._page_stats.find('h2', text=key).next.next.next.text.splitlines() if s])
-            tempscoredist = scoredist.split("\n")
-            for i in range(len(tempscoredist)):
-                tempscoredist[i] = tempscoredist[i].replace('\r', '').replace(u'\xa0', '')
-            self._scoredist = []
-            for i in range(0, len(tempscoredist), 2):
-                self._scoredist.append([tempscoredist[i], tempscoredist[i + 1]])
-        return self._scoredist
-
-    @property
-    def deviation(self):
-        try:
-            self._deviation
-        except AttributeError:
-            raw = self.scoredist
-            vals = []
-            freq = []
-            for i in range(len(raw)):
-                vals.append(int(raw[i][0]))
-                temp = raw[i][1].replace("(", "sub")
-                extract = re.search('sub(.*) votes', temp)
-                freq.append(int(extract.group(1)))
-            self._deviation = stats.std_(vals, freq)
-        return self._deviation
+            self._ending_themes = self._get_op_ed("ed")
+        return self._ending_themes
