@@ -28,6 +28,8 @@ print(anime.score) # prints 8.82
 
 List of properties:
 ```
+Anime
+
 Anime.mal_id
 Anime.title
 Anime.title_english
@@ -59,4 +61,34 @@ Anime.background
 Anime.related_anime
 Anime.opening_themes
 Anime.ending_themes
+```
+```
+Manga
+
+manga.mal_id
+manga.title
+manga.title_english
+manga.title_japanese
+manga.title_synonyms
+manga.url
+manga.image_url
+manga.type
+manga.status
+manga.genres
+manga.score
+manga.scored_by
+manga.rank
+manga.popularity
+manga.members
+manga.favorites
+manga.synopsis
+manga.background
+manga.favorites
+manga.synopsis
+manga.background
+manga.volumes
+manga.chapters
+manga.published
+manga.authors
+manga.related_manga
 ```
