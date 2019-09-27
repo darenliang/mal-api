@@ -1,6 +1,6 @@
-# Unofficial Python Mal API
+# Python MAL API
 
-Welcome! Here is an Unofficial MyAnimeList API in response to the MyAnimeList's API shutdown.
+Welcome! Here is an unofficial MyAnimeList API in response to the MyAnimeList's API shutdown.
 
 Hold on, this API is in early stages and is unstable.
 
@@ -9,6 +9,8 @@ Currently, the API does not feature any kind of rate limiting. Use the API in mo
 ## Notice
 
 I am in the process of rewriting the whole API, some functionality is currently missing. More features are to come.
+
+If there are any features that you wish to be supported, please raise an issue. Any feedback is also appreciated.
 
 ## Usage
 
@@ -37,7 +39,7 @@ anime.reload()
 print(anime.score) # prints 8.81
 ```
 
-List of properties:
+List of properties currently supported:
 ```
 Anime
 
