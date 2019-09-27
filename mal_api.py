@@ -13,7 +13,7 @@ class _MAL:
         self._page = self._parse_url(self._url)
         title = self._page.find("meta", property="og:title")["content"]
         if title == config.NOT_FOUND_TITLE:
-            raise ValueError("No such manga id on MyAnimeList")
+            raise ValueError("No such id on MyAnimeList")
         else:
             self._title = title
             url = self._page.find("meta", property="og:url")["content"]
