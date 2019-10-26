@@ -21,7 +21,7 @@ Import `mal_api.py` and install the required packages from `requirements.txt`
 To call the API, you need to create an object.
 
 ```python
-from mal_api import Anime
+from mal import Anime
 
 anime = Anime(1) # Cowboy Bebop
 
@@ -30,7 +30,7 @@ print(anime.score) # prints 8.82
 
 To refresh or reload an object, call the method "reload".
 ```python
-from mal_api import Anime
+from mal import Anime
 
 anime = Anime(1) # Cowboy Bebop
 
