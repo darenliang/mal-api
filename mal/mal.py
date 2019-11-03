@@ -24,7 +24,7 @@ class _MAL:
 
     def _parse_url(self, url):
         page_response = requests.get(url, timeout=config.TIMEOUT)
-        return BeautifulSoup(page_response.content, "lxml")
+        return BeautifulSoup(page_response.content, "html.parser")
 
     def _get_span_text(self, page, key, typing, bypass_link=False):
         for span in page:
