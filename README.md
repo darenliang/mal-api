@@ -1,6 +1,8 @@
 # Python MAL API
 
-Here is an unofficial MyAnimeList API in response to the MyAnimeList's API shutdown.
+[![pypi Version](https://img.shields.io/pypi/v/mal-api.svg)](https://pypi.org/project/mal-api/)
+
+Here is an unofficial MyAnimeList API for Python 3 in response to the MyAnimeList's API shutdown.
 
 Currently, the API does not feature any kind of rate limiting. Use the API in moderation and rate limit your queries (0.5 seconds is sufficient to my knowledge). This API uses cached webpage data to increase efficiency and save bandwidth. If you want to refresh your data, you must create a new object (a refresh option will most likely come in the future; no plans for dynamically updating info).
 
@@ -10,9 +12,9 @@ I am in the process of rewriting the whole API, some functionality is currently 
 
 If there are any features that you wish to be supported, please raise an issue. Any feedback is also appreciated.
 
-## Usage
+## Installation and Usage
 
-To install the required packages: `pip install requirements.txt`
+To install the library: `pip install mal-api`
 
 To import the library: `from mal import *`
 
