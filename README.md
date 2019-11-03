@@ -1,6 +1,6 @@
 # Python MAL API
 
-[![pypi Version](https://img.shields.io/pypi/v/mal-api.svg)](https://pypi.org/project/mal-api/)
+[![pypi Version](https://img.shields.io/pypi/v/mal-api.svg?color=informational)](https://pypi.org/project/mal-api/)
 
 Here is an unofficial MyAnimeList API for Python 3 in response to the MyAnimeList's API shutdown.
 
