@@ -14,7 +14,9 @@ If there are any features that you wish to be supported, please raise an issue. 
 
 ## Usage
 
-Import `mal_api.py` and install the required packages from `requirements.txt`
+To install the required packages: `pip install requirements.txt`
+
+To import the library: `from mal import *`
 
 ## API Documentation
 
