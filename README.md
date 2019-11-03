@@ -1,6 +1,6 @@
 # Python MAL API
 
-Welcome! Here is an unofficial MyAnimeList API in response to the MyAnimeList's API shutdown.
+Here is an unofficial MyAnimeList API in response to the MyAnimeList's API shutdown.
 
 Hold on, this API is in early stages and is unstable.
 
