@@ -1,4 +1,4 @@
-from .mal import _MAL
+from mal.mal import _MAL
 
 
 class Manga(_MAL):

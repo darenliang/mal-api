@@ -3,7 +3,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-from . import config
+from mal import config
 
 
 class _MAL:
