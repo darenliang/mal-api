@@ -28,16 +28,9 @@ from mal import Anime
 anime = Anime(1) # Cowboy Bebop
 
 print(anime.score) # prints 8.82
-```
 
-To refresh or reload an object, call the method "reload".
-```python
-from mal import Anime
+anime.reload() # reload object
 
-anime = Anime(1) # Cowboy Bebop
-
-print(anime.score) # prints 8.82
-anime.reload()
 print(anime.score) # prints 8.81
 ```
 
