@@ -34,7 +34,9 @@ class _MAL:
                     if typing == str:
                         return first_link.text
                     if typing == list:
-                        return [link.get_text() for link in span.parent.findChildren("a")]
+                        res = [link.get_text() for link in span.parent.findChildren("a")]
+                        res.remove("add some")
+                        return res
                 else:
                     results = span.parent.findChildren(text=True, recursive=True)
                     result = results[results.index(key) + 1].strip()
@@ -42,7 +44,11 @@ class _MAL:
                         return None
                     else:
                         if typing == int:
-                            return int(re.sub('[^0-9]', '', result))
+                            num = re.sub('[^0-9]', '', result)
+                            if num:
+                                return int(num)
+                            else:
+                                return None
                         if typing == str:
                             return result
                         if typing == list:
@@ -52,12 +58,12 @@ class _MAL:
         return None
 
     def _get_itemprop_span_value(self, page, itemprop, typing):
-        result = page.find("span", itemprop=itemprop).text
-        if result:
+        result = page.find("span", itemprop=itemprop)
+        if result is not None:
             if typing == int or typing == float:
-                return typing(re.sub('[^0-9.]', '', page.find("span", itemprop=itemprop).text))
+                return typing(re.sub('[^0-9.]', '', result.text))
             elif typing == str:
-                return page.find("span", itemprop=itemprop).text.replace('\n', ' ').replace('\r', '').strip()
+                return result.text.replace('\n', ' ').replace('\r', '').strip()
         else:
             return None
 
