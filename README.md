@@ -16,7 +16,7 @@ To install the library: `pip install mal-api`
 
 To import the library: `from mal import *`
 
-## API Documentation
+## Example
 
 To call the API, you need to create an object.
 
@@ -31,6 +31,8 @@ anime.reload() # reload object
 
 print(anime.score) # prints 8.81
 ```
+
+## API Documentation
 
 List of properties currently supported:
 ```
