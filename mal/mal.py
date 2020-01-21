@@ -7,12 +7,13 @@ from mal import config
 
 
 class _MAL:
-    def __init__(self, mal_id, mal_type):
+    def __init__(self, mal_id, mal_type, timeout):
+        self.timeout = timeout
         self._mal_id = mal_id
-        self._url = config.MAL_ENDPOINT + "{}/{}".format(mal_type, mal_id)
+        self._url = config._MAL_ENDPOINT + "{}/{}".format(mal_type, mal_id)
         self._page = self._parse_url(self._url)
         title = self._page.find("meta", property="og:title")["content"]
-        if title == config.NOT_FOUND_TITLE:
+        if title == config._NOT_FOUND_TITLE:
             raise ValueError("No such id on MyAnimeList")
         else:
             self._title = title
@@ -23,7 +24,7 @@ class _MAL:
                                                                                               {'class': 'dark_text'})
 
     def _parse_url(self, url):
-        page_response = requests.get(url, timeout=config.TIMEOUT)
+        page_response = requests.get(url, timeout=self.timeout)
         return BeautifulSoup(page_response.content, "html.parser")
 
     def _get_span_text(self, page, key, typing, bypass_link=False):
@@ -205,7 +206,7 @@ class _MAL:
         except AttributeError:
             raw_string = self._page.find("h2", {'style': "margin-top: 15px;"}).parent.text
             result = raw_string[raw_string.index("EditBackground") + 14:].replace("\n", " ").replace("\r", "").strip()
-            if result == config.NO_BACKGROUND_INFO:
+            if result == config._NO_BACKGROUND_INFO:
                 self._background = None
             else:
                 self._background = result

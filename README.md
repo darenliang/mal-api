@@ -32,6 +32,21 @@ anime.reload() # reload object
 print(anime.score) # prints 8.81
 ```
 
+## Configuration
+
+To configure timeout (default timeout is 5 seconds):
+
+```python
+from mal import Anime
+
+from mal import config
+
+config.TIMEOUT = 1  # Import level config
+
+anime = Anime(1, timeout=1)  # Object level config
+
+```
+
 ## API Documentation
 
 List of properties currently supported:

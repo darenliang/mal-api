@@ -1,9 +1,11 @@
 from mal.mal import _MAL
 
+from mal import config
+
 
 class Anime(_MAL):
-    def __init__(self, mal_id):
-        super().__init__(mal_id, "anime")
+    def __init__(self, mal_id, timeout=config.TIMEOUT):
+        super().__init__(mal_id, "anime", timeout)
 
     def reload(self):
         self.__init__(self._mal_id)
