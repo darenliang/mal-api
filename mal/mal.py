@@ -36,7 +36,8 @@ class _MAL:
                         return first_link.text
                     if typing == list:
                         res = [link.get_text() for link in span.parent.findChildren("a")]
-                        res.remove("add some")
+                        if("add some" in res):
+                            res.remove("add some")
                         return res
                 else:
                     results = span.parent.findChildren(text=True, recursive=True)
