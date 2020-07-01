@@ -4,8 +4,8 @@ from mal import config
 
 
 class Manga(_MAL):
-    def __init__(self, id, timeout=config.TIMEOUT):
-        super().__init__(id, "manga", timeout)
+    def __init__(self, mal_id, timeout=config.TIMEOUT):
+        super().__init__(mal_id, "manga", timeout)
 
     def reload(self):
         self.__init__(self._mal_id)

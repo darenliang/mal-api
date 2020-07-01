@@ -13,10 +13,10 @@ class Anime(_MAL):
     def _get_op_ed(self, option):
         themes = []
         if option == "op":
-            data = self._page.find("div", {'class': 'opnening'}).parent
+            data = self._page.find("div", {"class": "opnening"}).parent
         else:
-            data = self._page.find("div", {'class': 'ending'}).parent
-        data = data.findChildren("span", {'class': 'theme-song'})
+            data = self._page.find("div", {"class": "ending"}).parent
+        data = data.findChildren("span", {"class": "theme-song"})
         if data:
             if len(data) > 1:
                 for theme in data:
