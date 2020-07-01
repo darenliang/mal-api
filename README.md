@@ -51,7 +51,7 @@ anime = Anime(1, timeout=1)  # Object level config
 
 List of properties currently supported:
 ```
-Anime
+Anime(mal_id)
 
 Anime.mal_id
 Anime.title
@@ -86,7 +86,7 @@ Anime.opening_themes
 Anime.ending_themes
 ```
 ```
-Manga
+Manga(mal_id)
 
 Manga.mal_id
 Manga.title
@@ -114,4 +114,28 @@ Manga.chapters
 Manga.published
 Manga.authors
 Manga.related_manga
+```
+```
+AnimeSearch(query)
+
+returns an array of AnimeSearchResult
+
+AnimeSearchResult.image_url
+AnimeSearchResult.title
+AnimeSearchResult.synopsis
+AnimeSearchResult.type
+AnimeSearchResult.episodes
+AnimeSearchResult.score
+```
+```
+MangaSearch(query)
+
+returns an array of MangaSearchResult
+
+MangaSearchResult.image_url
+MangaSearchResult.title
+MangaSearchResult.synopsis
+MangaSearchResult.type
+MangaSearchResult.volumes
+MangaSearchResult.score
 ```

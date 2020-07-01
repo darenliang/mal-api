@@ -12,6 +12,9 @@ class AnimeSearch(_Search):
     def __init__(self, query, timeout=config.TIMEOUT):
         super().__init__(query, "anime", timeout)
 
+    def reload(self):
+        self.__init__(self._query)
+
     @property
     def results(self):
         try:
