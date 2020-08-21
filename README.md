@@ -20,6 +20,8 @@ To import the library: `from mal import *`
 
 To call the API, you need to create an object.
 
+#### ID Query Example
+
 ```python
 from mal import Anime
 
@@ -30,6 +32,16 @@ print(anime.score) # prints 8.82
 anime.reload() # reload object
 
 print(anime.score) # prints 8.81
+```
+
+#### Search Query Example
+
+```python
+from mal import AnimeSearch
+
+search = AnimeSearch("cowboy bebop") # Search for "cowboy bebop"
+
+print(search.results[0].title) # Get title of first result
 ```
 
 ## Configuration
@@ -44,7 +56,6 @@ from mal import config
 config.TIMEOUT = 1  # Import level config
 
 anime = Anime(1, timeout=1)  # Object level config
-
 ```
 
 ## API Documentation
@@ -118,7 +129,7 @@ Manga.related_manga
 ```
 AnimeSearch(query)
 
-returns an array of AnimeSearchResult
+returns an array of results via .results
 
 AnimeSearchResult.image_url
 AnimeSearchResult.title
@@ -130,7 +141,7 @@ AnimeSearchResult.score
 ```
 MangaSearch(query)
 
-returns an array of MangaSearchResult
+returns an array of results via .results
 
 MangaSearchResult.image_url
 MangaSearchResult.title
