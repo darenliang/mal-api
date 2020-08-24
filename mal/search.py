@@ -3,7 +3,8 @@ from mal.base import _Base
 
 
 class _SearchResult:
-    def __init__(self, image_url, title, synopsis, media_type, score):
+    def __init__(self, url, image_url, title, synopsis, media_type, score):
+        self.url = url
         self.image_url = image_url
         self.title = title
         self.synopsis = synopsis

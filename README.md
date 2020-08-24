@@ -131,6 +131,7 @@ AnimeSearch(query)
 
 returns an array of results via .results
 
+AnimeSearchResult.url
 AnimeSearchResult.image_url
 AnimeSearchResult.title
 AnimeSearchResult.synopsis
@@ -143,6 +144,7 @@ MangaSearch(query)
 
 returns an array of results via .results
 
+MangaSearchResult.url
 MangaSearchResult.image_url
 MangaSearchResult.title
 MangaSearchResult.synopsis
