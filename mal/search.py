@@ -1,9 +1,12 @@
+import re
+
 from mal import config
 from mal.base import _Base
 
 
 class _SearchResult:
-    def __init__(self, url, image_url, title, synopsis, media_type, score):
+    def __init__(self, mal_id, url, image_url, title, synopsis, media_type, score):
+        self.mal_id = mal_id
         self.url = url
         self.image_url = image_url
         self.title = title
@@ -23,6 +26,15 @@ class _Search(_Base):
         self._inner_page = self._page.find("div", {"class": "js-block-list"})
         if self._inner_page is None:
             raise ValueError("No results found")
+
+    @staticmethod
+    def _parse_mal_id(url):
+        pattern = r"^https:\/\/myanimelist\.net\/.+\/(\d+)\/.+$"
+        match = re.match(pattern, url)
+        try:
+            return int(match.group(1))
+        except ValueError:
+            return None
 
     @staticmethod
     def _parse_eps_vols(text):

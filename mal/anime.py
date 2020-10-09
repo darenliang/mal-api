@@ -130,3 +130,11 @@ class Anime(_MAL):
         except AttributeError:
             self._ending_themes = self._get_op_ed("ed")
         return self._ending_themes
+
+    @property
+    def background(self):
+        try:
+            self._background
+        except AttributeError:
+            self._background = self._parse_background("div")
+        return self._background

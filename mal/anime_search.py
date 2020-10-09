@@ -3,8 +3,8 @@ from mal.search import _Search, _SearchResult
 
 
 class AnimeSearchResult(_SearchResult):
-    def __init__(self, url, image_url, title, synopsis, media_type, episodes, score):
-        super().__init__(url, image_url, title, synopsis, media_type, score)
+    def __init__(self, mal_id, url, image_url, title, synopsis, media_type, episodes, score):
+        super().__init__(mal_id, url, image_url, title, synopsis, media_type, score)
         self.episodes = episodes
 
 
@@ -24,8 +24,13 @@ class AnimeSearch(_Search):
             results = []
             for tr in trs[1:]:
                 tds = tr.find_all("td")
+
+                url = tds[0].find("a")["href"]
+                mal_id = self._parse_mal_id(url)
+
                 results.append(AnimeSearchResult(
-                    url=tds[0].find("a")["href"],
+                    mal_id=mal_id,
+                    url=url,
                     image_url=tds[0].find("img")["data-src"],
                     title=tds[1].find("strong").text.strip(),
                     synopsis=self._remove_suffix(tds[1].find("div", {"class": "pt4"}).text.strip(), "read more."),

@@ -49,3 +49,11 @@ class Manga(_MAL):
         except AttributeError:
             self._related_manga = self._get_related()
         return self._related_manga
+
+    @property
+    def background(self):
+        try:
+            self._background
+        except AttributeError:
+            self._background = self._parse_background("h2")
+        return self._background

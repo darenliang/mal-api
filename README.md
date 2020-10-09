@@ -117,9 +117,6 @@ Manga.members
 Manga.favorites
 Manga.synopsis
 Manga.background
-Manga.favorites
-Manga.synopsis
-Manga.background
 Manga.volumes
 Manga.chapters
 Manga.published
@@ -131,6 +128,7 @@ AnimeSearch(query)
 
 returns an array of results via .results
 
+AnimeSearchResult.mal_id
 AnimeSearchResult.url
 AnimeSearchResult.image_url
 AnimeSearchResult.title
@@ -144,6 +142,7 @@ MangaSearch(query)
 
 returns an array of results via .results
 
+MangaSearchResult.mal_id
 MangaSearchResult.url
 MangaSearchResult.image_url
 MangaSearchResult.title

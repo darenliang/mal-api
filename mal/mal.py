@@ -55,8 +55,8 @@ class _MAL(_Base):
         return None
 
     @staticmethod
-    def _get_itemprop_span_value(page, itemprop, typing):
-        result = page.find("span", itemprop=itemprop)
+    def _get_itemprop_value(page, itemprop, element, typing):
+        result = page.find(element, itemprop=itemprop)
         if result is not None:
             if typing == int or typing == float:
                 return typing(re.sub("[^0-9.]", "", result.text))
@@ -71,6 +71,13 @@ class _MAL(_Base):
         for row in rows:
             data[row.td.text[:-1]] = [link.get_text() for link in row.findChildren("a")]
         return data
+
+    def _parse_background(self, element):
+        raw_string = self._page.find(element, {"style": "margin-top: 15px;"}).parent.text
+        result = raw_string[raw_string.index("EditBackground") + 14:].replace("\n", " ").replace("\r", "").strip()
+        if result == config.NO_BACKGROUND_INFO:
+            return None
+        return result
 
     @property
     def mal_id(self):
@@ -145,7 +152,7 @@ class _MAL(_Base):
         try:
             self._score
         except AttributeError:
-            self._score = self._get_itemprop_span_value(self._page, "ratingValue", float)
+            self._score = self._get_itemprop_value(self._page, "ratingValue", "span", float)
         return self._score
 
     @property
@@ -153,7 +160,7 @@ class _MAL(_Base):
         try:
             self._scored_by
         except AttributeError:
-            self._scored_by = self._get_itemprop_span_value(self._page, "ratingCount", int)
+            self._scored_by = self._get_itemprop_value(self._page, "ratingCount", "span", int)
         return self._scored_by
 
     @property
@@ -193,18 +200,5 @@ class _MAL(_Base):
         try:
             self._synopsis
         except AttributeError:
-            self._synopsis = self._get_itemprop_span_value(self._page, "description", str)
+            self._synopsis = self._get_itemprop_value(self._page, "description", "p", str)
         return self._synopsis
-
-    @property
-    def background(self):
-        try:
-            self._background
-        except AttributeError:
-            raw_string = self._page.find("h2", {"style": "margin-top: 15px;"}).parent.text
-            result = raw_string[raw_string.index("EditBackground") + 14:].replace("\n", " ").replace("\r", "").strip()
-            if result == config.NO_BACKGROUND_INFO:
-                self._background = None
-            else:
-                self._background = result
-        return self._background
