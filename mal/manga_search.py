@@ -3,7 +3,9 @@ from mal.search import _Search, _SearchResult
 
 
 class MangaSearchResult(_SearchResult):
-    def __init__(self, mal_id, url, image_url, title, synopsis, media_type, volumes, score):
+    def __init__(
+        self, mal_id, url, image_url, title, synopsis, media_type, volumes, score
+    ):
         super().__init__(mal_id, url, image_url, title, synopsis, media_type, score)
         self.volumes = volumes
 
@@ -28,15 +30,20 @@ class MangaSearch(_Search):
                 url = tds[0].find("a")["href"]
                 mal_id = self._parse_mal_id(url)
 
-                results.append(MangaSearchResult(
-                    mal_id=mal_id,
-                    url=url,
-                    image_url=tds[0].find("img")["data-src"],
-                    title=tds[1].find("strong").text.strip(),
-                    synopsis=self._remove_suffix(tds[1].find("div", {"class": "pt4"}).text.strip(), "read more."),
-                    media_type=tds[2].text.strip(),
-                    volumes=self._parse_eps_vols(tds[3].text),
-                    score=self._parse_score(tds[4].text)
-                ))
+                results.append(
+                    MangaSearchResult(
+                        mal_id=mal_id,
+                        url=url,
+                        image_url=tds[0].find("img")["data-src"],
+                        title=tds[1].find("strong").text.strip(),
+                        synopsis=self._remove_suffix(
+                            tds[1].find("div", {"class": "pt4"}).text.strip(),
+                            "read more.",
+                        ),
+                        media_type=tds[2].text.strip(),
+                        volumes=self._parse_eps_vols(tds[3].text),
+                        score=self._parse_score(tds[4].text),
+                    )
+                )
             self._results = results
         return self._results

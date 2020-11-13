@@ -64,7 +64,9 @@ class Anime(_MAL):
         try:
             self._producers
         except AttributeError:
-            self._producers = self._get_span_text(self._border_spans, "Producers:", list)
+            self._producers = self._get_span_text(
+                self._border_spans, "Producers:", list
+            )
         return self._producers
 
     @property
@@ -72,7 +74,9 @@ class Anime(_MAL):
         try:
             self._licensors
         except AttributeError:
-            self._licensors = self._get_span_text(self._border_spans, "Licensors:", list)
+            self._licensors = self._get_span_text(
+                self._border_spans, "Licensors:", list
+            )
         return self._licensors
 
     @property
@@ -130,6 +134,16 @@ class Anime(_MAL):
         except AttributeError:
             self._ending_themes = self._get_op_ed("ed")
         return self._ending_themes
+
+    @property
+    def synopsis(self):
+        try:
+            self._synopsis
+        except AttributeError:
+            self._synopsis = self._get_itemprop_value(
+                self._page, "description", "p", str
+            )
+        return self._synopsis
 
     @property
     def background(self):

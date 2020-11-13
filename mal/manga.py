@@ -51,6 +51,16 @@ class Manga(_MAL):
         return self._related_manga
 
     @property
+    def synopsis(self):
+        try:
+            self._synopsis
+        except AttributeError:
+            self._synopsis = self._get_itemprop_value(
+                self._page, "description", "span", str
+            )
+        return self._synopsis
+
+    @property
     def background(self):
         try:
             self._background

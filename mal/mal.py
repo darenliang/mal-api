@@ -18,8 +18,9 @@ class _MAL(_Base):
             url = self._page.find("meta", property="og:url")["content"]
             self._url = url
             self._page_stats = self._parse_url(url + "/stats")
-            self._border_spans = self._page.find("td", {"class": "borderClass"}).findChildren("span",
-                                                                                              {"class": "dark_text"})
+            self._border_spans = self._page.find(
+                "td", {"class": "borderClass"}
+            ).findChildren("span", {"class": "dark_text"})
 
     @staticmethod
     def _get_span_text(page, key, typing, bypass_link=False):
@@ -30,7 +31,9 @@ class _MAL(_Base):
                     if typing == str:
                         return first_link.text
                     if typing == list:
-                        res = [link.get_text() for link in span.parent.findChildren("a")]
+                        res = [
+                            link.get_text() for link in span.parent.findChildren("a")
+                        ]
                         if "add some" in res:
                             res.remove("add some")
                         return res
@@ -73,8 +76,15 @@ class _MAL(_Base):
         return data
 
     def _parse_background(self, element):
-        raw_string = self._page.find(element, {"style": "margin-top: 15px;"}).parent.text
-        result = raw_string[raw_string.index("EditBackground") + 14:].replace("\n", " ").replace("\r", "").strip()
+        raw_string = self._page.find(
+            element, {"style": "margin-top: 15px;"}
+        ).parent.text
+        result = (
+            raw_string[raw_string.index("EditBackground") + 14:]
+                .replace("\n", " ")
+                .replace("\r", "")
+                .strip()
+        )
         if result == config.NO_BACKGROUND_INFO:
             return None
         return result
@@ -92,7 +102,9 @@ class _MAL(_Base):
         try:
             self._title_english
         except AttributeError:
-            self._title_english = self._get_span_text(self._border_spans, "English:", str)
+            self._title_english = self._get_span_text(
+                self._border_spans, "English:", str
+            )
         return self._title_english
 
     @property
@@ -100,7 +112,9 @@ class _MAL(_Base):
         try:
             self._title_japanese
         except AttributeError:
-            self._title_japanese = self._get_span_text(self._border_spans, "Japanese:", str)
+            self._title_japanese = self._get_span_text(
+                self._border_spans, "Japanese:", str
+            )
         return self._title_japanese
 
     @property
@@ -108,7 +122,9 @@ class _MAL(_Base):
         try:
             self._title_synonyms
         except AttributeError:
-            self._title_synonyms = self._get_span_text(self._border_spans, "Synonyms:", list)
+            self._title_synonyms = self._get_span_text(
+                self._border_spans, "Synonyms:", list
+            )
         return self._title_synonyms
 
     @property
@@ -152,7 +168,9 @@ class _MAL(_Base):
         try:
             self._score
         except AttributeError:
-            self._score = self._get_itemprop_value(self._page, "ratingValue", "span", float)
+            self._score = self._get_itemprop_value(
+                self._page, "ratingValue", "span", float
+            )
         return self._score
 
     @property
@@ -160,7 +178,9 @@ class _MAL(_Base):
         try:
             self._scored_by
         except AttributeError:
-            self._scored_by = self._get_itemprop_value(self._page, "ratingCount", "span", int)
+            self._scored_by = self._get_itemprop_value(
+                self._page, "ratingCount", "span", int
+            )
         return self._scored_by
 
     @property
@@ -176,7 +196,9 @@ class _MAL(_Base):
         try:
             self._popularity
         except AttributeError:
-            self._popularity = self._get_span_text(self._border_spans, "Popularity:", int)
+            self._popularity = self._get_span_text(
+                self._border_spans, "Popularity:", int
+            )
         return self._popularity
 
     @property
@@ -194,11 +216,3 @@ class _MAL(_Base):
         except AttributeError:
             self._favorites = self._get_span_text(self._border_spans, "Favorites:", int)
         return self._favorites
-
-    @property
-    def synopsis(self):
-        try:
-            self._synopsis
-        except AttributeError:
-            self._synopsis = self._get_itemprop_value(self._page, "description", "p", str)
-        return self._synopsis

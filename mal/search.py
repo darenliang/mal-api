@@ -55,5 +55,5 @@ class _Search(_Base):
     @staticmethod
     def _remove_suffix(text, suffix):
         if text.endswith(suffix):
-            return text[:-len(suffix)]
+            return text[: -len(suffix)]
         return text
