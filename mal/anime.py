@@ -1,16 +1,31 @@
-from mal.mal import _MAL
+from typing import Optional, List, Dict
 
 from mal import config
+from mal.mal import _MAL
 
 
 class Anime(_MAL):
-    def __init__(self, mal_id, timeout=config.TIMEOUT):
+    def __init__(self, mal_id: int, timeout: int = config.TIMEOUT):
+        """
+        Anime query by ID
+        :param mal_id: MyAnimeList ID
+        :param timeout: Timeout in seconds
+        """
         super().__init__(mal_id, "anime", timeout)
 
-    def reload(self):
+    def reload(self) -> None:
+        """
+        Reload anime query
+        :return: None
+        """
         self.__init__(self._mal_id)
 
-    def _get_op_ed(self, option):
+    def _get_op_ed(self, option) -> List[str]:
+        """
+        Get list of OP or ED
+        :param option: "op" or "ed"
+        :return: List of OP or ED
+        """
         themes = []
         if option == "op":
             data = self._page.find("div", {"class": "opnening"}).parent
@@ -23,12 +38,14 @@ class Anime(_MAL):
                     themes.append(theme.text[4:])
             else:
                 themes = [data[0].text]
-            return themes
-        else:
-            return None
+        return themes
 
     @property
-    def episodes(self):
+    def episodes(self) -> Optional[int]:
+        """
+        Get episodes
+        :return: Episodes count
+        """
         try:
             self._episodes
         except AttributeError:
@@ -36,7 +53,11 @@ class Anime(_MAL):
         return self._episodes
 
     @property
-    def aired(self):
+    def aired(self) -> Optional[str]:
+        """
+        Get aired
+        :return: Aired status
+        """
         try:
             self._aired
         except AttributeError:
@@ -44,7 +65,11 @@ class Anime(_MAL):
         return self._aired
 
     @property
-    def premiered(self):
+    def premiered(self) -> Optional[str]:
+        """
+        Get premiered
+        :return: Premiered status
+        """
         try:
             self._premiered
         except AttributeError:
@@ -52,7 +77,11 @@ class Anime(_MAL):
         return self._premiered
 
     @property
-    def broadcast(self):
+    def broadcast(self) -> Optional[str]:
+        """
+        Get broadcast
+        :return: Broadcast status
+        """
         try:
             self._broadcast
         except AttributeError:
@@ -60,7 +89,11 @@ class Anime(_MAL):
         return self._broadcast
 
     @property
-    def producers(self):
+    def producers(self) -> List[str]:
+        """
+        Get producers
+        :return: List of producers
+        """
         try:
             self._producers
         except AttributeError:
@@ -70,7 +103,11 @@ class Anime(_MAL):
         return self._producers
 
     @property
-    def licensors(self):
+    def licensors(self) -> List[str]:
+        """
+        Get licensors
+        :return: List of licensors
+        """
         try:
             self._licensors
         except AttributeError:
@@ -80,7 +117,11 @@ class Anime(_MAL):
         return self._licensors
 
     @property
-    def studios(self):
+    def studios(self) -> List[str]:
+        """
+        Get studios
+        :return: List of studios
+        """
         try:
             self._studios
         except AttributeError:
@@ -88,7 +129,11 @@ class Anime(_MAL):
         return self._studios
 
     @property
-    def source(self):
+    def source(self) -> Optional[str]:
+        """
+        Get source
+        :return: Source
+        """
         try:
             self._source
         except AttributeError:
@@ -96,7 +141,11 @@ class Anime(_MAL):
         return self._source
 
     @property
-    def duration(self):
+    def duration(self) -> Optional[str]:
+        """
+        Get duration
+        :return: Duration string
+        """
         try:
             self._duration
         except AttributeError:
@@ -104,7 +153,11 @@ class Anime(_MAL):
         return self._duration
 
     @property
-    def rating(self):
+    def rating(self) -> Optional[str]:
+        """
+        Get age rating
+        :return: Age rating
+        """
         try:
             self._rating
         except AttributeError:
@@ -112,7 +165,11 @@ class Anime(_MAL):
         return self._rating
 
     @property
-    def related_anime(self):
+    def related_anime(self) -> Dict[str, List[str]]:
+        """
+        Get related anime
+        :return: Dict of related anime
+        """
         try:
             self._related_anime
         except AttributeError:
@@ -120,7 +177,11 @@ class Anime(_MAL):
         return self._related_anime
 
     @property
-    def opening_themes(self):
+    def opening_themes(self) -> List[str]:
+        """
+        Get opening themes
+        :return: List of opening themes
+        """
         try:
             self._opening_themes
         except AttributeError:
@@ -128,7 +189,11 @@ class Anime(_MAL):
         return self._opening_themes
 
     @property
-    def ending_themes(self):
+    def ending_themes(self) -> List[str]:
+        """
+        Get ending themes
+        :return: List of ending themes
+        """
         try:
             self._ending_themes
         except AttributeError:
@@ -136,7 +201,11 @@ class Anime(_MAL):
         return self._ending_themes
 
     @property
-    def synopsis(self):
+    def synopsis(self) -> Optional[str]:
+        """
+        Get synopsis
+        :return: Synopsis text
+        """
         try:
             self._synopsis
         except AttributeError:
@@ -146,7 +215,11 @@ class Anime(_MAL):
         return self._synopsis
 
     @property
-    def background(self):
+    def background(self) -> Optional[str]:
+        """
+        Get background info
+        :return: Background info
+        """
         try:
             self._background
         except AttributeError:

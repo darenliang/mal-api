@@ -1,17 +1,31 @@
-from mal.mal import _MAL
+from typing import Optional, List, Dict
 
 from mal import config
+from mal.mal import _MAL
 
 
 class Manga(_MAL):
-    def __init__(self, mal_id, timeout=config.TIMEOUT):
+    def __init__(self, mal_id: int, timeout: int = config.TIMEOUT):
+        """
+        Manga query by ID
+        :param mal_id: MyAnimeList ID
+        :param timeout: Timeout in seconds
+        """
         super().__init__(mal_id, "manga", timeout)
 
-    def reload(self):
+    def reload(self) -> None:
+        """
+        Reload manga query
+        :return: None
+        """
         self.__init__(self._mal_id)
 
     @property
-    def volumes(self):
+    def volumes(self) -> Optional[int]:
+        """
+        Get volumes
+        :return: Volumes count
+        """
         try:
             self._volumes
         except AttributeError:
@@ -19,7 +33,11 @@ class Manga(_MAL):
         return self._volumes
 
     @property
-    def chapters(self):
+    def chapters(self) -> Optional[int]:
+        """
+        Get chapters
+        :return: Chapters count
+        """
         try:
             self._chapters
         except AttributeError:
@@ -27,7 +45,11 @@ class Manga(_MAL):
         return self._chapters
 
     @property
-    def published(self):
+    def published(self) -> Optional[str]:
+        """
+        Get published time
+        :return: Published time
+        """
         try:
             self._published
         except AttributeError:
@@ -35,7 +57,11 @@ class Manga(_MAL):
         return self._published
 
     @property
-    def authors(self):
+    def authors(self) -> List[str]:
+        """
+        Get authors
+        :return: List of authors
+        """
         try:
             self._authors
         except AttributeError:
@@ -43,7 +69,11 @@ class Manga(_MAL):
         return self._authors
 
     @property
-    def related_manga(self):
+    def related_manga(self) -> Dict[str, List[str]]:
+        """
+        Get related manga
+        :return: Dict of related manga
+        """
         try:
             self._related_manga
         except AttributeError:
@@ -51,7 +81,11 @@ class Manga(_MAL):
         return self._related_manga
 
     @property
-    def synopsis(self):
+    def synopsis(self) -> Optional[str]:
+        """
+        Get synopsis
+        :return: Synopsis text
+        """
         try:
             self._synopsis
         except AttributeError:
@@ -61,7 +95,11 @@ class Manga(_MAL):
         return self._synopsis
 
     @property
-    def background(self):
+    def background(self) -> Optional[str]:
+        """
+        Get background info
+        :return: Background info
+        """
         try:
             self._background
         except AttributeError:

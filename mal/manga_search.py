@@ -1,24 +1,50 @@
+from typing import List
+
 from mal import config
 from mal.search import _Search, _SearchResult
 
 
 class MangaSearchResult(_SearchResult):
     def __init__(
-        self, mal_id, url, image_url, title, synopsis, media_type, volumes, score
+            self, mal_id, url, image_url, title, synopsis, media_type, volumes, score
     ):
+        """
+        Manga search result
+        :param mal_id: MyAnimeList ID
+        :param url: URL
+        :param image_url: Image URL
+        :param title: Title
+        :param synopsis: Brief synopsis
+        :param media_type: Type
+        :param volumes: Volumes count
+        :param score: Score
+        """
         super().__init__(mal_id, url, image_url, title, synopsis, media_type, score)
         self.volumes = volumes
 
 
 class MangaSearch(_Search):
-    def __init__(self, query, timeout=config.TIMEOUT):
+    def __init__(self, query: str, timeout: int = config.TIMEOUT):
+        """
+        Manga search by query
+        :param query: Query text
+        :param timeout: Timeout in seconds
+        """
         super().__init__(query, "manga", timeout)
 
-    def reload(self):
+    def reload(self) -> None:
+        """
+        Reload manga search
+        :return: None
+        """
         self.__init__(self._query)
 
     @property
-    def results(self):
+    def results(self) -> List[MangaSearchResult]:
+        """
+        Get results
+        :return: List of manga search results
+        """
         try:
             self._results
         except AttributeError:

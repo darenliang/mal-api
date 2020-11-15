@@ -1,4 +1,5 @@
 import re
+from typing import Any, Optional, List, Dict
 
 from mal import config
 from mal.base import _Base
@@ -6,6 +7,12 @@ from mal.base import _Base
 
 class _MAL(_Base):
     def __init__(self, mal_id, mal_type, timeout):
+        """
+        MAL base class
+        :param mal_id: MyAnimeList ID
+        :param mal_type: Type
+        :param timeout: Timeout in seconds
+        """
         super().__init__(timeout)
         self._mal_id = mal_id
         self._url = config.MAL_ENDPOINT + "{}/{}".format(mal_type, mal_id)
@@ -23,7 +30,15 @@ class _MAL(_Base):
             ).findChildren("span", {"class": "dark_text"})
 
     @staticmethod
-    def _get_span_text(page, key, typing, bypass_link=False):
+    def _get_span_text(page, key, typing, bypass_link=False) -> Any:
+        """
+        Get span text
+        :param page: Beautiful Soup object
+        :param key: Key to find
+        :param typing: Type to assert
+        :param bypass_link: Skip first link flag
+        :return: Span text value
+        """
         for span in page:
             if span.get_text() == key:
                 first_link = span.parent.a
@@ -58,7 +73,15 @@ class _MAL(_Base):
         return None
 
     @staticmethod
-    def _get_itemprop_value(page, itemprop, element, typing):
+    def _get_itemprop_value(page, itemprop, element, typing) -> Any:
+        """
+        Get itemprop value
+        :param page: Beautiful Soup object
+        :param itemprop: Itemprop name
+        :param element: Element type
+        :param typing: Type to assert
+        :return: Itemprop value
+        """
         result = page.find(element, itemprop=itemprop)
         if result is not None:
             if typing == int or typing == float:
@@ -68,14 +91,23 @@ class _MAL(_Base):
         else:
             return None
 
-    def _get_related(self):
+    def _get_related(self) -> Dict[str, List[str]]:
+        """
+        Get related
+        :return: Dict of related
+        """
         data = {}
         rows = self._page.find("td", {"class": "pb24"}).table.findChildren("tr")
         for row in rows:
             data[row.td.text[:-1]] = [link.get_text() for link in row.findChildren("a")]
         return data
 
-    def _parse_background(self, element):
+    def _parse_background(self, element) -> Optional[str]:
+        """
+        Parse background text
+        :param element: Element type
+        :return: Background text
+        """
         raw_string = self._page.find(
             element, {"style": "margin-top: 15px;"}
         ).parent.text
@@ -90,15 +122,27 @@ class _MAL(_Base):
         return result
 
     @property
-    def mal_id(self):
+    def mal_id(self) -> int:
+        """
+        Get MyAnimeList ID
+        :return: MyAnimeList ID
+        """
         return self._mal_id
 
     @property
-    def title(self):
+    def title(self) -> str:
+        """
+        Get title
+        :return: Title
+        """
         return self._title
 
     @property
-    def title_english(self):
+    def title_english(self) -> str:
+        """
+        Get English title
+        :return: English title
+        """
         try:
             self._title_english
         except AttributeError:
@@ -108,7 +152,11 @@ class _MAL(_Base):
         return self._title_english
 
     @property
-    def title_japanese(self):
+    def title_japanese(self) -> str:
+        """
+        Get Japanese title
+        :return: Japanese title
+        """
         try:
             self._title_japanese
         except AttributeError:
@@ -118,7 +166,11 @@ class _MAL(_Base):
         return self._title_japanese
 
     @property
-    def title_synonyms(self):
+    def title_synonyms(self) -> List[str]:
+        """
+        Get title synonyms
+        :return: Title synonyms
+        """
         try:
             self._title_synonyms
         except AttributeError:
@@ -128,11 +180,19 @@ class _MAL(_Base):
         return self._title_synonyms
 
     @property
-    def url(self):
+    def url(self) -> str:
+        """
+        Get URL
+        :return: URL
+        """
         return self._url
 
     @property
-    def image_url(self):
+    def image_url(self) -> Optional[str]:
+        """
+        Get image URL
+        :return: Image URL
+        """
         try:
             self._image_url
         except AttributeError:
@@ -140,7 +200,11 @@ class _MAL(_Base):
         return self._image_url
 
     @property
-    def type(self):
+    def type(self) -> Optional[str]:
+        """
+        Get type
+        :return: Type
+        """
         try:
             self._type
         except AttributeError:
@@ -148,7 +212,11 @@ class _MAL(_Base):
         return self._type
 
     @property
-    def status(self):
+    def status(self) -> Optional[str]:
+        """
+        Get status
+        :return: Status text
+        """
         try:
             self._status
         except AttributeError:
@@ -156,7 +224,11 @@ class _MAL(_Base):
         return self._status
 
     @property
-    def genres(self):
+    def genres(self) -> List[str]:
+        """
+        Get genres
+        :return: List of genres
+        """
         try:
             self._genres
         except AttributeError:
@@ -164,7 +236,11 @@ class _MAL(_Base):
         return self._genres
 
     @property
-    def score(self):
+    def score(self) -> Optional[float]:
+        """
+        Get score
+        :return: Score
+        """
         try:
             self._score
         except AttributeError:
@@ -174,7 +250,11 @@ class _MAL(_Base):
         return self._score
 
     @property
-    def scored_by(self):
+    def scored_by(self) -> Optional[int]:
+        """
+        Get scored by
+        :return: Scored by
+        """
         try:
             self._scored_by
         except AttributeError:
@@ -184,7 +264,11 @@ class _MAL(_Base):
         return self._scored_by
 
     @property
-    def rank(self):
+    def rank(self) -> Optional[int]:
+        """
+        Get rank
+        :return: Rank
+        """
         try:
             self._rank
         except AttributeError:
@@ -192,7 +276,11 @@ class _MAL(_Base):
         return self._rank
 
     @property
-    def popularity(self):
+    def popularity(self) -> Optional[int]:
+        """
+        Get popularity
+        :return: Popularity
+        """
         try:
             self._popularity
         except AttributeError:
@@ -202,7 +290,11 @@ class _MAL(_Base):
         return self._popularity
 
     @property
-    def members(self):
+    def members(self) -> Optional[int]:
+        """
+        Get members
+        :return: Members count
+        """
         try:
             self._members
         except AttributeError:
@@ -210,7 +302,11 @@ class _MAL(_Base):
         return self._members
 
     @property
-    def favorites(self):
+    def favorites(self) -> Optional[int]:
+        """
+        Get favorites
+        :return: Favorites count
+        """
         try:
             self._favorites
         except AttributeError:
