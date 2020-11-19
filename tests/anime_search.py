@@ -16,8 +16,7 @@ class TestAnimeSearch(unittest.TestCase):
         )
         self.assertEqual(
             self.anime_search.results[0].image_url,
-            "https://cdn.myanimelist.net/r/50x70/images/anime/4/19644.jpg?s=bb1e96eb0a0"
-            "224a57aa45443eab92575",
+            "https://cdn.myanimelist.net/images/anime/4/19644.jpg",
         )
         self.assertEqual(self.anime_search.results[0].title, "Cowboy Bebop")
         self.assertEqual(

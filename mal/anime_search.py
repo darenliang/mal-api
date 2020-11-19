@@ -60,7 +60,9 @@ class AnimeSearch(_Search):
                     AnimeSearchResult(
                         mal_id=mal_id,
                         url=url,
-                        image_url=tds[0].find("img")["data-src"],
+                        image_url=self._extract_image_url(
+                            tds[0].find("img")["data-src"]
+                        ),
                         title=tds[1].find("strong").text.strip(),
                         synopsis=self._remove_suffix(
                             tds[1].find("div", {"class": "pt4"}).text.strip(),

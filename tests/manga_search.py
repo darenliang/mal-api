@@ -16,8 +16,7 @@ class TestMangaSearch(unittest.TestCase):
         )
         self.assertEqual(
             self.manga_search.results[0].image_url,
-            "https://cdn.myanimelist.net/r/50x70/images/manga/3/54525.jpg?s=c660994ac8b"
-            "a790d9e6bb2400f7c73cd",
+            "https://cdn.myanimelist.net/images/manga/3/54525.jpg",
         )
         self.assertEqual(self.manga_search.results[0].title, "Monster")
         self.assertEqual(

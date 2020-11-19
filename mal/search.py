@@ -16,6 +16,9 @@ class _SearchResult:
 
 
 class _Search(_Base):
+    _image_url_path_regex = r"images\/([a-z]+\/\d+\/\d+)\."
+    _mal_id_regex = r"^https:\/\/myanimelist\.net\/.+\/(\d+)\/.+$"
+
     def __init__(self, query, mal_type, timeout):
         if len(query) > 100:
             raise ValueError("Query cannot be more than 100 characters")
@@ -29,8 +32,7 @@ class _Search(_Base):
 
     @staticmethod
     def _parse_mal_id(url):
-        pattern = r"^https:\/\/myanimelist\.net\/.+\/(\d+)\/.+$"
-        match = re.match(pattern, url)
+        match = re.match(_Search._mal_id_regex, url)
         try:
             return int(match.group(1))
         except ValueError:
@@ -57,3 +59,10 @@ class _Search(_Base):
         if text.endswith(suffix):
             return text[: -len(suffix)]
         return text
+
+    @staticmethod
+    def _extract_image_url(url):
+        return (
+            f"https://cdn.myanimelist.net/images/"
+            f"{re.search(_Search._image_url_path_regex, url).group(1)}.jpg"
+        )

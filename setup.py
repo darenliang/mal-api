@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mal-api",
-    version="0.3.4",
+    version="0.3.5",
     description="A local MyAnimeList API ",
     license="MIT",
     long_description=long_description,
