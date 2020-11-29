@@ -20,14 +20,13 @@ class _MAL(_Base):
         title = self._page.find("meta", property="og:title")["content"]
         if title == config.NOT_FOUND_TITLE:
             raise ValueError("No such id on MyAnimeList")
-        else:
-            self._title = title
-            url = self._page.find("meta", property="og:url")["content"]
-            self._url = url
-            self._page_stats = self._parse_url(url + "/stats")
-            self._border_spans = self._page.find(
-                "td", {"class": "borderClass"}
-            ).findChildren("span", {"class": "dark_text"})
+        self._title = title
+        url = self._page.find("meta", property="og:url")["content"]
+        self._url = url
+        self._page_stats = self._parse_url(url + "/stats")
+        self._border_spans = self._page.find(
+            "td", {"class": "borderClass"}
+        ).findChildren("span", {"class": "dark_text"})
 
     @staticmethod
     def _get_span_text(page, key, typing, bypass_link=False) -> Any:
