@@ -83,14 +83,10 @@ class TestAnime(unittest.TestCase):
                 "Adaptation": [
                     "Cowboy Bebop",
                     "Shooting Star Bebop: Cowboy Bebop",
-                    "Cowboy Bebop: Tengoku no Tobira",
-                    "Cowboy Bebop: Ein no Natsuyasumi",
-                    "Cowboy Bebop: Yose Atsume Blues",
                 ],
                 "Side story": [
                     "Cowboy Bebop: Tengoku no Tobira",
                     "Cowboy Bebop: Ein no Natsuyasumi",
-                    "Cowboy Bebop: Yose Atsume Blues",
                 ],
                 "Summary": ["Cowboy Bebop: Yose Atsume Blues"],
             },

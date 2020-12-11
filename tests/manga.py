@@ -69,7 +69,6 @@ class TestManga(unittest.TestCase):
                 "Adaptation": ["Monster"],
                 "Side story": [
                     "Mou Hitotsu no Monster: The Investigative Report",
-                    "Monster",
                 ],
             },
         )

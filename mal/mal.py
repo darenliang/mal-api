@@ -100,8 +100,22 @@ class _MAL(_Base):
         """
         data = {}
         rows = self._page.find("td", {"class": "pb24"}).table.findChildren("tr")
+
+        key_order = []
         for row in rows:
-            data[row.td.text[:-1]] = [link.get_text() for link in row.findChildren("a")]
+            key = row.td.text[:-1]
+            key_order.append(key)
+            data[key] = [link.get_text() for link in row.findChildren("a")]
+
+        # Blame MyAnimeList for having such a broken site
+        # Remove duplicates values
+        history = set()
+        for key in reversed(key_order):
+            for el in data[key][:]:
+                if el not in history:
+                    history.add(el)
+                else:
+                    data[key].remove(el)
         return data
 
     def _parse_background(self, element) -> Optional[str]:
