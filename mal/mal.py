@@ -23,7 +23,10 @@ class _MAL(_Base):
         self._title = title
         url = self._page.find("meta", property="og:url")["content"]
         self._url = url
+
+        # Not used right now
         self._page_stats = self._parse_url(url + "/stats")
+
         self._border_spans = self._page.find(
             "td", {"class": "borderClass"}
         ).findChildren("span", {"class": "dark_text"})
