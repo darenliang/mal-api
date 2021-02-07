@@ -1,6 +1,6 @@
 from typing import Optional, List, Dict
 
-from mal import config
+from mal import config, base
 from mal.mal import _MAL
 
 
@@ -41,6 +41,7 @@ class Anime(_MAL):
         return themes
 
     @property
+    @base.property
     def episodes(self) -> Optional[int]:
         """
         Get episodes
@@ -53,6 +54,7 @@ class Anime(_MAL):
         return self._episodes
 
     @property
+    @base.property
     def aired(self) -> Optional[str]:
         """
         Get aired
@@ -65,6 +67,7 @@ class Anime(_MAL):
         return self._aired
 
     @property
+    @base.property
     def premiered(self) -> Optional[str]:
         """
         Get premiered
@@ -77,6 +80,7 @@ class Anime(_MAL):
         return self._premiered
 
     @property
+    @base.property
     def broadcast(self) -> Optional[str]:
         """
         Get broadcast
@@ -89,6 +93,7 @@ class Anime(_MAL):
         return self._broadcast
 
     @property
+    @base.property_list
     def producers(self) -> List[str]:
         """
         Get producers
@@ -103,6 +108,7 @@ class Anime(_MAL):
         return self._producers
 
     @property
+    @base.property_list
     def licensors(self) -> List[str]:
         """
         Get licensors
@@ -117,6 +123,7 @@ class Anime(_MAL):
         return self._licensors
 
     @property
+    @base.property_list
     def studios(self) -> List[str]:
         """
         Get studios
@@ -129,6 +136,7 @@ class Anime(_MAL):
         return self._studios
 
     @property
+    @base.property
     def source(self) -> Optional[str]:
         """
         Get source
@@ -141,6 +149,7 @@ class Anime(_MAL):
         return self._source
 
     @property
+    @base.property
     def duration(self) -> Optional[str]:
         """
         Get duration
@@ -153,6 +162,7 @@ class Anime(_MAL):
         return self._duration
 
     @property
+    @base.property
     def rating(self) -> Optional[str]:
         """
         Get age rating
@@ -165,6 +175,7 @@ class Anime(_MAL):
         return self._rating
 
     @property
+    @base.property_dict
     def related_anime(self) -> Dict[str, List[str]]:
         """
         Get related anime
@@ -177,6 +188,7 @@ class Anime(_MAL):
         return self._related_anime
 
     @property
+    @base.property_list
     def opening_themes(self) -> List[str]:
         """
         Get opening themes
@@ -189,6 +201,7 @@ class Anime(_MAL):
         return self._opening_themes
 
     @property
+    @base.property_list
     def ending_themes(self) -> List[str]:
         """
         Get ending themes
@@ -201,6 +214,7 @@ class Anime(_MAL):
         return self._ending_themes
 
     @property
+    @base.property
     def synopsis(self) -> Optional[str]:
         """
         Get synopsis
@@ -215,6 +229,7 @@ class Anime(_MAL):
         return self._synopsis
 
     @property
+    @base.property
     def background(self) -> Optional[str]:
         """
         Get background info

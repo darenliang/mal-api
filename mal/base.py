@@ -1,7 +1,55 @@
-from typing import Any
+from typing import Any, Callable
 
 import requests
 from bs4 import BeautifulSoup
+
+
+def property(func: Callable) -> Callable:
+    """
+    Handle crashes when accessing properties
+    :param func: Callable
+    :return: Property value
+    """
+
+    def wrapper(self):
+        try:
+            return func(self)
+        except:
+            return None
+
+    return wrapper
+
+
+def property_list(func: Callable) -> Callable:
+    """
+    Handle crashes when accessing properties
+    :param func: Callable
+    :return: Property value
+    """
+
+    def wrapper(self):
+        try:
+            return func(self)
+        except:
+            return []
+
+    return wrapper
+
+
+def property_dict(func: Callable) -> Callable:
+    """
+    Handle crashes when accessing properties
+    :param func: Callable
+    :return: Property value
+    """
+
+    def wrapper(self):
+        try:
+            return func(self)
+        except:
+            return {}
+
+    return wrapper
 
 
 class _Base:

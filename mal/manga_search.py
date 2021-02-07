@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from mal import config
+from mal import config, base
 from mal.search import _Search, _SearchResult
 
 
@@ -13,6 +13,7 @@ class MangaSearchResult(_SearchResult):
         super().__init__(tds)
 
     @property
+    @base.property
     def volumes(self) -> Optional[int]:
         """
         Get volumes
@@ -42,6 +43,7 @@ class MangaSearch(_Search):
         self.__init__(self._query)
 
     @property
+    @base.property_list
     def results(self) -> List[MangaSearchResult]:
         """
         Get results

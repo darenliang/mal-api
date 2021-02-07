@@ -1,7 +1,7 @@
 import re
 from typing import Optional
 
-from mal import config
+from mal import config, base
 from mal.base import _Base
 
 
@@ -31,6 +31,7 @@ class _SearchResult:
             return None
 
     @property
+    @base.property
     def url(self) -> str:
         """
         Get URL
@@ -43,6 +44,7 @@ class _SearchResult:
         return self._url
 
     @property
+    @base.property
     def mal_id(self) -> int:
         """
         Get MyAnimeList ID
@@ -56,6 +58,7 @@ class _SearchResult:
         return self._mal_id
 
     @property
+    @base.property
     def image_url(self) -> str:
         """
         Get image URL
@@ -73,6 +76,7 @@ class _SearchResult:
         return self._image_url
 
     @property
+    @base.property
     def title(self) -> str:
         """
         Get title
@@ -85,6 +89,7 @@ class _SearchResult:
         return self._title
 
     @property
+    @base.property
     def synopsis(self) -> str:
         """
         Get synopsis
@@ -100,6 +105,7 @@ class _SearchResult:
         return self._synopsis
 
     @property
+    @base.property
     def type(self) -> str:
         """
         Get media type
@@ -112,6 +118,7 @@ class _SearchResult:
         return self._type
 
     @property
+    @base.property
     def score(self) -> Optional[float]:
         """
         Get score

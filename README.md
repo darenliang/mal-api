@@ -60,9 +60,11 @@ anime = Anime(1, timeout=1)  # Object level config
 
 ## API Documentation
 
-List of properties currently supported:
+List of properties/methods currently supported:
 ```
 Anime(mal_id)
+
+Anime.reload()
 
 Anime.mal_id
 Anime.title
@@ -99,6 +101,8 @@ Anime.ending_themes
 ```
 Manga(mal_id)
 
+Manga.reload()
+
 Manga.mal_id
 Manga.title
 Manga.title_english
@@ -126,6 +130,8 @@ Manga.related_manga
 ```
 AnimeSearch(query)
 
+AnimeSearch.reload()
+
 returns an array of results via .results
 
 AnimeSearchResult.mal_id
@@ -139,6 +145,8 @@ AnimeSearchResult.score
 ```
 ```
 MangaSearch(query)
+
+MangaSearch.reload()
 
 returns an array of results via .results
 

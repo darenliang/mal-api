@@ -1,7 +1,7 @@
 import re
 from typing import Any, Optional, List, Dict
 
-from mal import config
+from mal import config, base
 from mal.base import _Base
 
 
@@ -138,6 +138,7 @@ class _MAL(_Base):
         return result
 
     @property
+    @base.property
     def mal_id(self) -> int:
         """
         Get MyAnimeList ID
@@ -146,6 +147,7 @@ class _MAL(_Base):
         return self._mal_id
 
     @property
+    @base.property
     def title(self) -> str:
         """
         Get title
@@ -154,6 +156,7 @@ class _MAL(_Base):
         return self._title
 
     @property
+    @base.property
     def title_english(self) -> str:
         """
         Get English title
@@ -168,6 +171,7 @@ class _MAL(_Base):
         return self._title_english
 
     @property
+    @base.property
     def title_japanese(self) -> str:
         """
         Get Japanese title
@@ -182,6 +186,7 @@ class _MAL(_Base):
         return self._title_japanese
 
     @property
+    @base.property_list
     def title_synonyms(self) -> List[str]:
         """
         Get title synonyms
@@ -196,6 +201,7 @@ class _MAL(_Base):
         return self._title_synonyms
 
     @property
+    @base.property
     def url(self) -> str:
         """
         Get URL
@@ -204,6 +210,7 @@ class _MAL(_Base):
         return self._url
 
     @property
+    @base.property
     def image_url(self) -> Optional[str]:
         """
         Get image URL
@@ -216,6 +223,7 @@ class _MAL(_Base):
         return self._image_url
 
     @property
+    @base.property
     def type(self) -> Optional[str]:
         """
         Get type
@@ -228,6 +236,7 @@ class _MAL(_Base):
         return self._type
 
     @property
+    @base.property
     def status(self) -> Optional[str]:
         """
         Get status
@@ -240,6 +249,7 @@ class _MAL(_Base):
         return self._status
 
     @property
+    @base.property_list
     def genres(self) -> List[str]:
         """
         Get genres
@@ -252,6 +262,7 @@ class _MAL(_Base):
         return self._genres
 
     @property
+    @base.property
     def score(self) -> Optional[float]:
         """
         Get score
@@ -266,6 +277,7 @@ class _MAL(_Base):
         return self._score
 
     @property
+    @base.property
     def scored_by(self) -> Optional[int]:
         """
         Get scored by
@@ -280,6 +292,7 @@ class _MAL(_Base):
         return self._scored_by
 
     @property
+    @base.property
     def rank(self) -> Optional[int]:
         """
         Get rank
@@ -292,6 +305,7 @@ class _MAL(_Base):
         return self._rank
 
     @property
+    @base.property
     def popularity(self) -> Optional[int]:
         """
         Get popularity
@@ -306,6 +320,7 @@ class _MAL(_Base):
         return self._popularity
 
     @property
+    @base.property
     def members(self) -> Optional[int]:
         """
         Get members
@@ -318,6 +333,7 @@ class _MAL(_Base):
         return self._members
 
     @property
+    @base.property
     def favorites(self) -> Optional[int]:
         """
         Get favorites

@@ -1,6 +1,6 @@
 from typing import Optional, List, Dict
 
-from mal import config
+from mal import config, base
 from mal.mal import _MAL
 
 
@@ -21,6 +21,7 @@ class Manga(_MAL):
         self.__init__(self._mal_id)
 
     @property
+    @base.property
     def volumes(self) -> Optional[int]:
         """
         Get volumes
@@ -33,6 +34,7 @@ class Manga(_MAL):
         return self._volumes
 
     @property
+    @base.property
     def chapters(self) -> Optional[int]:
         """
         Get chapters
@@ -45,6 +47,7 @@ class Manga(_MAL):
         return self._chapters
 
     @property
+    @base.property
     def published(self) -> Optional[str]:
         """
         Get published time
@@ -57,6 +60,7 @@ class Manga(_MAL):
         return self._published
 
     @property
+    @base.property_list
     def authors(self) -> List[str]:
         """
         Get authors
@@ -69,6 +73,7 @@ class Manga(_MAL):
         return self._authors
 
     @property
+    @base.property_dict
     def related_manga(self) -> Dict[str, List[str]]:
         """
         Get related manga
@@ -81,6 +86,7 @@ class Manga(_MAL):
         return self._related_manga
 
     @property
+    @base.property
     def synopsis(self) -> Optional[str]:
         """
         Get synopsis
@@ -95,6 +101,7 @@ class Manga(_MAL):
         return self._synopsis
 
     @property
+    @base.property
     def background(self) -> Optional[str]:
         """
         Get background info
