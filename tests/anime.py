@@ -103,6 +103,14 @@ class TestAnime(unittest.TestCase):
                 '"Blue" by The Seatbelts feat. Mai Yamane (ep 26)',
             ],
         )
+        self.assertEqual(
+            self.anime.characters, 
+            [
+                'Spiegel, Spike', 'Valentine, Faye', 'Wong Hau Pepelu Tivrusky IV, Edward', 
+                'Black, Jet', 'Ein', 'Vicious', 'Julia', 'Eckener, Grencia Mars Elijah Guo', 
+                'Von de Oniyate, Andy', 'Mad Pierrot'
+            ]
+        )
 
 
 if __name__ == "__main__":

@@ -40,6 +40,15 @@ class Anime(_MAL):
                 themes = [data[0].text]
         return themes
 
+    def _get_characters(self) -> List[str]:
+        """
+        Get list of characters
+        :param option: 
+        :return: List of Characters
+        """
+        characters = [ x.text for x in self._page.findAll('h3', {"class": "h3_characters_voice_actors"} )]
+        return characters
+
     @property
     @base.property
     def episodes(self) -> Optional[int]:
@@ -212,6 +221,19 @@ class Anime(_MAL):
         except AttributeError:
             self._ending_themes = self._get_op_ed("ed")
         return self._ending_themes
+
+    @property
+    @base.property_list
+    def characters(self) -> List[str]:
+        """
+        Get characters
+        :return: List of characters
+        """
+        try:
+            self._characters
+        except AttributeError:
+            self._characters = self._get_characters()
+        return self._characters
 
     @property
     @base.property
