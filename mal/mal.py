@@ -16,10 +16,7 @@ class _MAL(_Base):
         super().__init__(timeout)
         self._mal_id = mal_id
         self._debug = debug
-        if mal_id == 0:
-            self._url = ""
-        else:
-            self._url = config.MAL_ENDPOINT + "{}/{}".format(mal_type, mal_id)
+        self._url = config.MAL_ENDPOINT + "{}/{}".format(mal_type, mal_id)
         self._page = self._parse_url(self._url,self._debug)
         title = self._page.find("meta", property="og:title")["content"]
         if title == config.NOT_FOUND_TITLE:
@@ -29,7 +26,7 @@ class _MAL(_Base):
         self._url = url
 
         # Not used right now
-        #self._page_stats = self._parse_url(url + "/stats")
+        self._page_stats = self._parse_url(url + "/stats", self._debug)
 
         self._border_spans = self._page.find(
             "td", {"class": "borderClass"}
