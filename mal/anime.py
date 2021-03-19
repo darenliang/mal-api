@@ -5,13 +5,13 @@ from mal.mal import _MAL
 
 
 class Anime(_MAL):
-    def __init__(self, mal_id: int, timeout: int = config.TIMEOUT):
+    def __init__(self, mal_id: int, timeout: int = config.TIMEOUT, debug: bool = False):
         """
         Anime query by ID
         :param mal_id: MyAnimeList ID
         :param timeout: Timeout in seconds
         """
-        super().__init__(mal_id, "anime", timeout)
+        super().__init__(mal_id, "anime", timeout, debug)
 
     def reload(self) -> None:
         """
@@ -19,6 +19,19 @@ class Anime(_MAL):
         :return: None
         """
         self.__init__(self._mal_id)
+
+    class _Character(object):
+        def __init__(self,_name,_actor):
+            self.name = _name
+            self.actor = _actor
+            #print(_name,_actor)
+
+        def __str__(self):
+            #print("_Char:",[self.name,self.actor])
+            return self.name+':'+self.actor
+
+        def __repr__(self):
+            return self.name+':'+self.actor
 
     def _get_op_ed(self, option) -> List[str]:
         """
@@ -42,12 +55,32 @@ class Anime(_MAL):
 
     def _get_characters(self) -> List[str]:
         """
-        Get list of characters
+        Get list of characters and voice actors
         :param option: 
         :return: List of Characters
         """
-        characters = [ x.text for x in self._page.findAll('h3', {"class": "h3_characters_voice_actors"} )]
+        characters = []
+        data = self._page.find("div", {"class": "detail-characters-list clearfix"})
+        chars = data.findChildren("tr")
+        for i in range(len(chars)):
+            if not i%2:
+                _name = chars[i].find('h3', {"class": "h3_characters_voice_actors"} ).select('a')[0].text
+            else:
+                _actor = chars[i].select('a')[0].text
+                characters.append(Anime._Character(_name,_actor))
+            #chars = [ x.text for x in self._page.findAll('h3', {"class": "h3_characters_voice_actors"} )]
         return characters
+
+    def _get_staff(self) -> List[str]:
+        """
+        Get list of staff
+        :param option: 
+        :return: List of staff
+        """
+        data = self._page.findAll("div", {"class": "detail-characters-list clearfix"})[1] #staff has the same class as the voice actors, so selecting second tag 
+        data = data.findAll('td', {"class": "borderClass"} )[1::2] #since the pics are class 'ac borderClass' they are also selected, skipping them
+        staff = [ x.select('a')[0].text for x in data ]
+        return staff
 
     @property
     @base.property
@@ -224,7 +257,7 @@ class Anime(_MAL):
 
     @property
     @base.property_list
-    def characters(self) -> List[str]:
+    def characters(self) -> List[_Character]:
         """
         Get characters
         :return: List of characters
@@ -234,6 +267,20 @@ class Anime(_MAL):
         except AttributeError:
             self._characters = self._get_characters()
         return self._characters
+
+    @property
+    @base.property_list
+    def staff(self) -> List[str]:
+        """
+        Get staff
+        :return: List of staff
+        """
+        try:
+            self._staff
+        except AttributeError:
+            self._staff = self._get_staff()
+        return self._staff
+
 
     @property
     @base.property
