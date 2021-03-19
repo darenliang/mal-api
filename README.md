@@ -98,7 +98,7 @@ Anime.related_anime
 Anime.opening_themes
 Anime.ending_themes
 Anime.staff
-Anime.characters is a list of characters with attributes name and actor
+Anime.characters (a list of characters with attributes name and actor)
 
 ```
 ```
