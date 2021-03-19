@@ -97,6 +97,9 @@ Anime.background
 Anime.related_anime
 Anime.opening_themes
 Anime.ending_themes
+Anime.staff
+Anime.characters is a list of characters with attributes name and actor
+
 ```
 ```
 Manga(mal_id)
@@ -126,6 +129,7 @@ Manga.chapters
 Manga.published
 Manga.authors
 Manga.related_manga
+Manga.characters
 ```
 ```
 AnimeSearch(query)
