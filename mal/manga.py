@@ -4,14 +4,25 @@ from mal import config, base
 from mal.mal import _MAL
 
 
+class MangaCharacter:
+    def __init__(self, name, role):
+        """
+        Manga character
+        :param name: Character name
+        :param role: Role
+        """
+        self.name: str = name
+        self.role: str = role
+
+
 class Manga(_MAL):
-    def __init__(self, mal_id: int, timeout: int = config.TIMEOUT, debug: int = False):
+    def __init__(self, mal_id: int, timeout: int = config.TIMEOUT):
         """
         Manga query by ID
         :param mal_id: MyAnimeList ID
         :param timeout: Timeout in seconds
         """
-        super().__init__(mal_id, "manga", timeout, debug)
+        super().__init__(mal_id, "manga", timeout)
 
     def reload(self) -> None:
         """
@@ -20,15 +31,39 @@ class Manga(_MAL):
         """
         self.__init__(self._mal_id)
 
-    def _get_characters(self) -> List[str]:
+    def _get_characters(self) -> List[MangaCharacter]:
         """
         Get list of characters
-        :param option: 
         :return: List of characters
         """
-        data = self._page.find("div", {"class": "detail-characters-list clearfix"}) #staff has the same class as the voice actors, so selecting second tag 
-        data = data.findAll('td', {"class": "borderClass"} )[1::2] #since the pics are class 'ac borderClass' they are also selected, skipping them
-        characters = [ x.select('a')[0].text for x in data ]
+        # Quickly narrow down character header
+        td = self._page.find("td", {"class": "pb24"})
+        headers = td.find_all("h2")
+
+        character_header = None
+        for header in headers:
+            # MyAnimeList, can you please stop making your pages different?
+            if header.contents[1] == "Characters":
+                character_header = header
+                break
+
+        # Move through DOM to check for the existence of a characters table
+        data = character_header.next_sibling
+        if "No characters for this manga have been added to this title" in data:
+            return []
+
+        characters = []
+        chars = data.findChildren("tr")
+        for i, char in enumerate(chars):
+            name = char.select('a')[1].text
+            role = char.select('small')[0].text
+            characters.append(
+                MangaCharacter(
+                    name,  # noqa: name will always be defined
+                    role,  # noqa: role will always be defined
+                )
+            )
+
         return characters
 
     @property
@@ -85,7 +120,7 @@ class Manga(_MAL):
 
     @property
     @base.property_list
-    def characters(self) -> List[str]:
+    def characters(self) -> List[MangaCharacter]:
         """
         Get characters
         :return: List of characters
@@ -95,7 +130,6 @@ class Manga(_MAL):
         except AttributeError:
             self._characters = self._get_characters()
         return self._characters
-
 
     @property
     @base.property_dict

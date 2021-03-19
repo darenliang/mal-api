@@ -2,7 +2,7 @@ from typing import Any, Callable
 
 import requests
 from bs4 import BeautifulSoup
-import os
+
 
 def property(func: Callable) -> Callable:
     """
@@ -60,22 +60,11 @@ class _Base:
         """
         self.timeout = timeout
 
-    def _parse_url(self, url, debug=False) -> Any:
+    def _parse_url(self, url) -> Any:
         """
         Parse URL
         :param url: URL
         :return: Beautiful Soup object
         """
-        if debug and os.path.exists("__cache.bin"):
-            fp = open("__cache.bin","rb")
-            _page = fp.read()
-            fp.close()
-            print("Warning: debug mode; loading from cache..")
-            return BeautifulSoup(_page, "html.parser")
-        else:
-            page_response = requests.get(url, timeout=self.timeout)
-            if debug:
-                fp = open("__cache.bin","wb")
-                fp.write(page_response.content)
-                fp.close()
-            return BeautifulSoup(page_response.content, "html.parser")
+        page_response = requests.get(url, timeout=self.timeout)
+        return BeautifulSoup(page_response.content, "html.parser")

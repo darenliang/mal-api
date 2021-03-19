@@ -103,14 +103,11 @@ class TestAnime(unittest.TestCase):
                 '"Blue" by The Seatbelts feat. Mai Yamane (ep 26)',
             ],
         )
-        self.assertEqual(
-            self.anime.staff, 
-            ['Maseba, Yutaka', 'Minami, Masahiko', 'Watanabe, Shinichiro', 'Kobayashi, Katsuyoshi']
-        )
-        self.assertEqual(
-            self.anime.characters, 
-            ['Spiegel, Spike:Yamadera, Kouichi', 'Valentine, Faye:Hayashibara, Megumi', 'Wong Hau Pepelu Tivrusky IV, Edward:Tada, Aoi', 'Black, Jet:Ishizuka, Unshou', 'Ein:Yamadera, Kouichi', 'Vicious:Wakamoto, Norio', 'Julia:Takashima, Gara', 'Eckener, Grencia Mars Elijah Guo:Horiuchi, Kenyuu', 'Von de Oniyate, Andy:Ebara, Masashi', 'Mad Pierrot:Ginga, Banjou']
-        )
+        self.assertEqual(self.anime.characters[0].name, "Spiegel, Spike")
+        self.assertEqual(self.anime.characters[0].role, "Main")
+        self.assertEqual(self.anime.characters[0].voice_actor, "Yamadera, Kouichi")
+        self.assertEqual(self.anime.staff[0].name, "Maseba, Yutaka")
+        self.assertEqual(self.anime.staff[0].role, "Producer")
 
 
 if __name__ == "__main__":
