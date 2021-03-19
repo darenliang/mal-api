@@ -60,7 +60,7 @@ class _Base:
         """
         self.timeout = timeout
 
-    def _parse_url(self, url, debug) -> Any:
+    def _parse_url(self, url, debug=False) -> Any:
         """
         Parse URL
         :param url: URL
