@@ -4,6 +4,30 @@ from mal import config, base
 from mal.mal import _MAL
 
 
+class AnimeCharacter:
+    def __init__(self, name, role, voice_actor):
+        """
+        Anime character
+        :param name: Character name
+        :param role: Role
+        :param voice_actor: Voice actor
+        """
+        self.name: str = name
+        self.role: str = role
+        self.voice_actor: str = voice_actor
+
+
+class Staff:
+    def __init__(self, name, role):
+        """
+        Staff
+        :param name: Staff name
+        :param role: Role
+        """
+        self.name: str = name
+        self.role: str = role
+
+
 class Anime(_MAL):
     def __init__(self, mal_id: int, timeout: int = config.TIMEOUT):
         """
@@ -39,6 +63,80 @@ class Anime(_MAL):
             else:
                 themes = [data[0].text]
         return themes
+
+    def _get_characters(self) -> List[AnimeCharacter]:
+        """
+        Get list of characters
+        :return: List of characters
+        """
+        # Quickly narrow down character header
+        td = self._page.find("td", {"class": "pb24"})
+        headers = td.find_all("h2")
+
+        character_header = None
+        for header in headers:
+            if header.text == "Characters & Voice Actors":
+                character_header = header
+                break
+
+        # Move through DOM to check for the existence of a characters table
+        data = character_header.parent.next_sibling
+        if "No characters or voice actors have been added to this title" in data:
+            return []
+
+        characters = []
+        chars = data.findChildren("tr")
+        for i, char in enumerate(chars):
+            if i % 2 == 0:
+                name = char.select('a')[1].text
+                role = char.select('small')[0].text
+            else:
+                actor = char.select('a')[0].text
+                characters.append(
+                    AnimeCharacter(
+                        name,  # noqa: name will always be defined
+                        role,  # noqa: role will always be defined
+                        actor
+                    )
+                )
+
+        return characters
+
+    def _get_staff(self) -> List[Staff]:
+        """
+        Get list of staff
+        :return: List of staff
+        """
+        # Quickly narrow down staff header
+        td = self._page.find("td", {"class": "pb24"})
+        headers = td.find_all("h2")
+
+        staff_header = None
+        for header in headers:
+            if header.text == "Staff":
+                staff_header = header
+                break
+
+        # Move through DOM to check for the existence of a staff table
+        if "No staff for this anime have been added to this title" in staff_header.next_sibling:
+            return []
+
+        # Set staff div using relative DOM operations
+        # MyAnimeList, please add ids to your site elements.
+        # It'll make our lives much easier. Thank you in advanced.
+        data = staff_header.parent.next_sibling.next_sibling
+
+        # Since the pics are class 'ac borderClass' they are also selected, skipping
+        # them.
+        data = data.findAll('td', {"class": "borderClass"})[1::2]
+
+        staff = []
+        for i, el in enumerate(data):
+            name = el.select('a')[0].text
+            role = el.select('div')[0].select('small')[0].text
+            staff.append(Staff(name, role))
+
+        return staff
 
     @property
     @base.property
@@ -212,6 +310,32 @@ class Anime(_MAL):
         except AttributeError:
             self._ending_themes = self._get_op_ed("ed")
         return self._ending_themes
+
+    @property
+    @base.property_list
+    def characters(self) -> List[AnimeCharacter]:
+        """
+        Get characters
+        :return: List of characters
+        """
+        try:
+            self._characters
+        except AttributeError:
+            self._characters = self._get_characters()
+        return self._characters
+
+    @property
+    @base.property_list
+    def staff(self) -> List[Staff]:
+        """
+        Get staff
+        :return: List of staff
+        """
+        try:
+            self._staff
+        except AttributeError:
+            self._staff = self._get_staff()
+        return self._staff
 
     @property
     @base.property

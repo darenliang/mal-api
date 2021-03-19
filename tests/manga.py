@@ -72,6 +72,8 @@ class TestManga(unittest.TestCase):
                 ],
             },
         )
+        self.assertEqual(self.manga.characters[0].name, "Liebert, Johan")
+        self.assertEqual(self.manga.characters[0].role, "Main")
 
 
 if __name__ == "__main__":
