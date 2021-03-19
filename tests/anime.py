@@ -104,12 +104,12 @@ class TestAnime(unittest.TestCase):
             ],
         )
         self.assertEqual(
+            self.anime.staff, 
+            ['Maseba, Yutaka', 'Minami, Masahiko', 'Watanabe, Shinichiro', 'Kobayashi, Katsuyoshi']
+        )
+        self.assertEqual(
             self.anime.characters, 
-            [
-                'Spiegel, Spike', 'Valentine, Faye', 'Wong Hau Pepelu Tivrusky IV, Edward', 
-                'Black, Jet', 'Ein', 'Vicious', 'Julia', 'Eckener, Grencia Mars Elijah Guo', 
-                'Von de Oniyate, Andy', 'Mad Pierrot'
-            ]
+            ['Spiegel, Spike:Yamadera, Kouichi', 'Valentine, Faye:Hayashibara, Megumi', 'Wong Hau Pepelu Tivrusky IV, Edward:Tada, Aoi', 'Black, Jet:Ishizuka, Unshou', 'Ein:Yamadera, Kouichi', 'Vicious:Wakamoto, Norio', 'Julia:Takashima, Gara', 'Eckener, Grencia Mars Elijah Guo:Horiuchi, Kenyuu', 'Von de Oniyate, Andy:Ebara, Masashi', 'Mad Pierrot:Ginga, Banjou']
         )
 
 

@@ -63,6 +63,10 @@ class TestManga(unittest.TestCase):
         self.assertEqual(self.manga.chapters, 162)
         self.assertEqual(self.manga.published, "Dec  5, 1994 to Dec  20, 2001")
         self.assertEqual(self.manga.authors, ["Urasawa, Naoki"])
+        self.assertEqual(self.manga.characters, 
+            ['Liebert, Johan', 'Tenma, Kenzou', 'Liebert, Anna', 
+            'Grimmer, Wolfgang', 'Lunge, Heinrich', 'Heinemann, Eva', 'Dieter', 
+            'Reest, Martin', 'Reichwein, Julius', 'Roberto'])
         self.assertEqual(
             self.manga.related_manga,
             {
@@ -72,6 +76,7 @@ class TestManga(unittest.TestCase):
                 ],
             },
         )
+
 
 
 if __name__ == "__main__":

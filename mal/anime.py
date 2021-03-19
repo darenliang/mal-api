@@ -31,7 +31,7 @@ class Anime(_MAL):
             return self.name+':'+self.actor
 
         def __repr__(self):
-            return self.name+':'+self.actor
+            return "'"+self.name+':'+self.actor+"'"
 
     def _get_op_ed(self, option) -> List[str]:
         """
