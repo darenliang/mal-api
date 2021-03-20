@@ -1,8 +1,8 @@
 import re
 from typing import Optional
 
-from mal import config, base
-from mal.base import _Base
+from mal import config, _base
+from mal._base import _Base
 
 
 class _SearchResult:
@@ -10,10 +10,6 @@ class _SearchResult:
     _mal_id_regex = r"^https:\/\/myanimelist\.net\/.+\/(\d+)\/.+$"
 
     def __init__(self, tds):
-        """
-        Search result
-        :param tds: Table columns
-        """
         self._tds = tds
 
     @staticmethod
@@ -31,12 +27,8 @@ class _SearchResult:
             return None
 
     @property
-    @base.property
+    @_base.property
     def url(self) -> str:
-        """
-        Get URL
-        :return: URL
-        """
         try:
             self._url
         except AttributeError:
@@ -44,12 +36,8 @@ class _SearchResult:
         return self._url
 
     @property
-    @base.property
+    @_base.property
     def mal_id(self) -> int:
-        """
-        Get MyAnimeList ID
-        :return: MyAnimeList ID
-        """
         try:
             self._mal_id
         except AttributeError:
@@ -58,12 +46,8 @@ class _SearchResult:
         return self._mal_id
 
     @property
-    @base.property
+    @_base.property
     def image_url(self) -> str:
-        """
-        Get image URL
-        :return: Image URL
-        """
         try:
             self._image_url
         except AttributeError:
@@ -76,12 +60,8 @@ class _SearchResult:
         return self._image_url
 
     @property
-    @base.property
+    @_base.property
     def title(self) -> str:
-        """
-        Get title
-        :return: Title
-        """
         try:
             self._title
         except AttributeError:
@@ -89,12 +69,8 @@ class _SearchResult:
         return self._title
 
     @property
-    @base.property
+    @_base.property
     def synopsis(self) -> str:
-        """
-        Get synopsis
-        :return: Synopsis text
-        """
         try:
             self._synopsis
         except AttributeError:
@@ -105,12 +81,8 @@ class _SearchResult:
         return self._synopsis
 
     @property
-    @base.property
+    @_base.property
     def type(self) -> str:
-        """
-        Get media type
-        :return: Media type
-        """
         try:
             self._type
         except AttributeError:
@@ -118,12 +90,8 @@ class _SearchResult:
         return self._type
 
     @property
-    @base.property
+    @_base.property
     def score(self) -> Optional[float]:
-        """
-        Get score
-        :return: Score
-        """
         try:
             self._score
         except AttributeError:

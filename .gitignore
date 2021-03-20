@@ -4,3 +4,5 @@ venv/
 build/
 dist/
 mal_api.egg-info/
+
+docs/_build

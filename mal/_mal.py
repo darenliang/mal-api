@@ -1,24 +1,18 @@
 import re
 from typing import Any, Optional, List, Dict
 
-from mal import config, base
-from mal.base import _Base
+from mal import config, _base
+from mal._base import _Base
 
 
 class _MAL(_Base):
     def __init__(self, mal_id, mal_type, timeout):
-        """
-        MAL base class
-        :param mal_id: MyAnimeList ID
-        :param mal_type: Type
-        :param timeout: Timeout in seconds
-        """
         super().__init__(timeout)
         self._mal_id = mal_id
         self._url = config.MAL_ENDPOINT + "{}/{}".format(mal_type, mal_id)
         self._page = self._parse_url(self._url)
         title = self._page.find("meta", property="og:title")["content"]
-        if title == config.NOT_FOUND_TITLE:
+        if title == "404 Not Found - MyAnimeList.net ":
             raise ValueError("No such id on MyAnimeList")
         self._title = title
         url = self._page.find("meta", property="og:url")["content"]
@@ -33,14 +27,6 @@ class _MAL(_Base):
 
     @staticmethod
     def _get_span_text(page, key, typing, bypass_link=False) -> Any:
-        """
-        Get span text
-        :param page: Beautiful Soup object
-        :param key: Key to find
-        :param typing: Type to assert
-        :param bypass_link: Skip first link flag
-        :return: Span text value
-        """
         for span in page:
             if span.get_text() == key:
                 first_link = span.parent.a
@@ -76,14 +62,6 @@ class _MAL(_Base):
 
     @staticmethod
     def _get_itemprop_value(page, itemprop, element, typing) -> Any:
-        """
-        Get itemprop value
-        :param page: Beautiful Soup object
-        :param itemprop: Itemprop name
-        :param element: Element type
-        :param typing: Type to assert
-        :return: Itemprop value
-        """
         result = page.find(element, itemprop=itemprop)
         if result is not None:
             if typing == int or typing == float:
@@ -93,37 +71,7 @@ class _MAL(_Base):
         else:
             return None
 
-    def _get_related(self) -> Dict[str, List[str]]:
-        """
-        Get related
-        :return: Dict of related
-        """
-        data = {}
-        rows = self._page.find("td", {"class": "pb24"}).table.findChildren("tr")
-
-        key_order = []
-        for row in rows:
-            key = row.td.text[:-1]
-            key_order.append(key)
-            data[key] = [link.get_text() for link in row.findChildren("a")]
-
-        # Blame MyAnimeList for having such a broken site
-        # Remove duplicates values
-        history = set()
-        for key in reversed(key_order):
-            for el in data[key][:]:
-                if el not in history:
-                    history.add(el)
-                else:
-                    data[key].remove(el)
-        return data
-
     def _parse_background(self, element) -> Optional[str]:
-        """
-        Parse background text
-        :param element: Element type
-        :return: Background text
-        """
         raw_string = self._page.find(
             element, {"style": "margin-top: 15px;"}
         ).parent.text
@@ -133,35 +81,24 @@ class _MAL(_Base):
                 .replace("\r", "")
                 .strip()
         )
-        if result == config.NO_BACKGROUND_INFO:
+        if result == "No background information has been added to this title. " \
+                     "Help improve our database by adding background information here.":
             return None
         return result
 
     @property
-    @base.property
+    @_base.property
     def mal_id(self) -> int:
-        """
-        Get MyAnimeList ID
-        :return: MyAnimeList ID
-        """
         return self._mal_id
 
     @property
-    @base.property
+    @_base.property
     def title(self) -> str:
-        """
-        Get title
-        :return: Title
-        """
         return self._title
 
     @property
-    @base.property
+    @_base.property
     def title_english(self) -> str:
-        """
-        Get English title
-        :return: English title
-        """
         try:
             self._title_english
         except AttributeError:
@@ -171,12 +108,8 @@ class _MAL(_Base):
         return self._title_english
 
     @property
-    @base.property
+    @_base.property
     def title_japanese(self) -> str:
-        """
-        Get Japanese title
-        :return: Japanese title
-        """
         try:
             self._title_japanese
         except AttributeError:
@@ -186,12 +119,8 @@ class _MAL(_Base):
         return self._title_japanese
 
     @property
-    @base.property_list
+    @_base.property_list
     def title_synonyms(self) -> List[str]:
-        """
-        Get title synonyms
-        :return: Title synonyms
-        """
         try:
             self._title_synonyms
         except AttributeError:
@@ -201,21 +130,13 @@ class _MAL(_Base):
         return self._title_synonyms
 
     @property
-    @base.property
+    @_base.property
     def url(self) -> str:
-        """
-        Get URL
-        :return: URL
-        """
         return self._url
 
     @property
-    @base.property
+    @_base.property
     def image_url(self) -> Optional[str]:
-        """
-        Get image URL
-        :return: Image URL
-        """
         try:
             self._image_url
         except AttributeError:
@@ -223,12 +144,8 @@ class _MAL(_Base):
         return self._image_url
 
     @property
-    @base.property
+    @_base.property
     def type(self) -> Optional[str]:
-        """
-        Get type
-        :return: Type
-        """
         try:
             self._type
         except AttributeError:
@@ -236,12 +153,8 @@ class _MAL(_Base):
         return self._type
 
     @property
-    @base.property
+    @_base.property
     def status(self) -> Optional[str]:
-        """
-        Get status
-        :return: Status text
-        """
         try:
             self._status
         except AttributeError:
@@ -249,12 +162,8 @@ class _MAL(_Base):
         return self._status
 
     @property
-    @base.property_list
+    @_base.property_list
     def genres(self) -> List[str]:
-        """
-        Get genres
-        :return: List of genres
-        """
         try:
             self._genres
         except AttributeError:
@@ -262,12 +171,8 @@ class _MAL(_Base):
         return self._genres
 
     @property
-    @base.property
+    @_base.property
     def score(self) -> Optional[float]:
-        """
-        Get score
-        :return: Score
-        """
         try:
             self._score
         except AttributeError:
@@ -277,12 +182,8 @@ class _MAL(_Base):
         return self._score
 
     @property
-    @base.property
+    @_base.property
     def scored_by(self) -> Optional[int]:
-        """
-        Get scored by
-        :return: Scored by
-        """
         try:
             self._scored_by
         except AttributeError:
@@ -292,12 +193,8 @@ class _MAL(_Base):
         return self._scored_by
 
     @property
-    @base.property
+    @_base.property
     def rank(self) -> Optional[int]:
-        """
-        Get rank
-        :return: Rank
-        """
         try:
             self._rank
         except AttributeError:
@@ -305,12 +202,8 @@ class _MAL(_Base):
         return self._rank
 
     @property
-    @base.property
+    @_base.property
     def popularity(self) -> Optional[int]:
-        """
-        Get popularity
-        :return: Popularity
-        """
         try:
             self._popularity
         except AttributeError:
@@ -320,12 +213,8 @@ class _MAL(_Base):
         return self._popularity
 
     @property
-    @base.property
+    @_base.property
     def members(self) -> Optional[int]:
-        """
-        Get members
-        :return: Members count
-        """
         try:
             self._members
         except AttributeError:
@@ -333,12 +222,8 @@ class _MAL(_Base):
         return self._members
 
     @property
-    @base.property
+    @_base.property
     def favorites(self) -> Optional[int]:
-        """
-        Get favorites
-        :return: Favorites count
-        """
         try:
             self._favorites
         except AttributeError:

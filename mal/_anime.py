@@ -1,55 +1,62 @@
 from typing import Optional, List, Dict
 
-from mal import config, base
-from mal.mal import _MAL
+from mal import config, _base
+from mal._mal import _MAL
 
 
-class AnimeCharacter:
+class AnimeCharacterResult:
     def __init__(self, name, role, voice_actor):
         """
-        Anime character
-        :param name: Character name
-        :param role: Role
-        :param voice_actor: Voice actor
+        Anime character result
         """
-        self.name: str = name
-        self.role: str = role
-        self.voice_actor: str = voice_actor
+        self._name = name
+        self._role = role
+        self._voice_actor = voice_actor
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def role(self) -> str:
+        return self._role
+
+    @property
+    def voice_actor(self) -> str:
+        return self._voice_actor
 
 
-class Staff:
+class AnimeStaffResult:
     def __init__(self, name, role):
         """
-        Staff
-        :param name: Staff name
-        :param role: Role
+        Anime staff result
         """
-        self.name: str = name
-        self.role: str = role
+        self._name = name
+        self._role = role
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def role(self) -> str:
+        return self._role
 
 
 class Anime(_MAL):
     def __init__(self, mal_id: int, timeout: int = config.TIMEOUT):
         """
         Anime query by ID
-        :param mal_id: MyAnimeList ID
-        :param timeout: Timeout in seconds
         """
         super().__init__(mal_id, "anime", timeout)
 
     def reload(self) -> None:
         """
         Reload anime query
-        :return: None
         """
         self.__init__(self._mal_id)
 
     def _get_op_ed(self, option) -> List[str]:
-        """
-        Get list of OP or ED
-        :param option: "op" or "ed"
-        :return: List of OP or ED
-        """
         themes = []
         if option == "op":
             data = self._page.find("div", {"class": "opnening"}).parent
@@ -64,14 +71,41 @@ class Anime(_MAL):
                 themes = [data[0].text]
         return themes
 
-    def _get_characters(self) -> List[AnimeCharacter]:
-        """
-        Get list of characters
-        :return: List of characters
-        """
+    def _get_related_anime(self) -> Dict[str, List[str]]:
+        # Quickly narrow down header
+        headers = self._page.find_all("h2")
+
+        related_header = None  # noqa
+        for header in headers:
+            if header.text == "Related Anime":
+                related_header = header
+                break
+        else:
+            return {}
+
+        data = {}
+        rows = related_header.parent.next_sibling.findChildren("tr")
+
+        key_order = []
+        for row in rows:
+            key = row.td.text[:-1]
+            key_order.append(key)
+            data[key] = [link.get_text() for link in row.findChildren("a")]
+
+        # Blame MyAnimeList for having such a broken site
+        # Remove duplicates values
+        history = set()
+        for key in reversed(key_order):
+            for el in data[key][:]:
+                if el not in history:
+                    history.add(el)
+                else:
+                    data[key].remove(el)
+        return data
+
+    def _get_characters(self) -> List[AnimeCharacterResult]:
         # Quickly narrow down character header
-        td = self._page.find("td", {"class": "pb24"})
-        headers = td.find_all("h2")
+        headers = self._page.find_all("h2")
 
         character_header = None
         for header in headers:
@@ -93,7 +127,7 @@ class Anime(_MAL):
             else:
                 actor = char.select('a')[0].text
                 characters.append(
-                    AnimeCharacter(
+                    AnimeCharacterResult(
                         name,  # noqa: name will always be defined
                         role,  # noqa: role will always be defined
                         actor
@@ -102,14 +136,9 @@ class Anime(_MAL):
 
         return characters
 
-    def _get_staff(self) -> List[Staff]:
-        """
-        Get list of staff
-        :return: List of staff
-        """
+    def _get_staff(self) -> List[AnimeStaffResult]:
         # Quickly narrow down staff header
-        td = self._page.find("td", {"class": "pb24"})
-        headers = td.find_all("h2")
+        headers = self._page.find_all("h2")
 
         staff_header = None
         for header in headers:
@@ -134,17 +163,85 @@ class Anime(_MAL):
         for i, el in enumerate(data):
             name = el.select('a')[0].text
             role = el.select('div')[0].select('small')[0].text
-            staff.append(Staff(name, role))
+            staff.append(AnimeStaffResult(name, role))
 
         return staff
 
+    """
+    Duplicate properties for AutoAPI
+    """
+
     @property
-    @base.property
+    def mal_id(self) -> int:
+        return super().mal_id
+
+    @property
+    def title(self) -> str:
+        return super().title
+
+    @property
+    def title_english(self) -> str:
+        return super().title_english
+
+    @property
+    def title_japanese(self) -> str:
+        return super().title_japanese
+
+    @property
+    def title_synonyms(self) -> List[str]:
+        return super().title_synonyms
+
+    @property
+    def url(self) -> str:
+        return super().url
+
+    @property
+    def image_url(self) -> str:
+        return super().image_url
+
+    @property
+    def type(self) -> Optional[str]:
+        return super().type
+
+    @property
+    def status(self) -> Optional[str]:
+        return super().status
+
+    @property
+    def genres(self) -> List[str]:
+        return super().genres
+
+    @property
+    def score(self) -> Optional[float]:
+        return super().score
+
+    @property
+    def scored_by(self) -> Optional[int]:
+        return super().scored_by
+
+    @property
+    def rank(self) -> Optional[int]:
+        return super().rank
+
+    @property
+    def popularity(self) -> Optional[int]:
+        return super().popularity
+
+    @property
+    def members(self) -> Optional[int]:
+        return super().members
+
+    @property
+    def favorites(self) -> Optional[int]:
+        return super().favorites
+
+    """
+    Duplicate properties for AutoAPI ends here
+    """
+
+    @property
+    @_base.property
     def episodes(self) -> Optional[int]:
-        """
-        Get episodes
-        :return: Episodes count
-        """
         try:
             self._episodes
         except AttributeError:
@@ -152,12 +249,8 @@ class Anime(_MAL):
         return self._episodes
 
     @property
-    @base.property
+    @_base.property
     def aired(self) -> Optional[str]:
-        """
-        Get aired
-        :return: Aired status
-        """
         try:
             self._aired
         except AttributeError:
@@ -165,12 +258,8 @@ class Anime(_MAL):
         return self._aired
 
     @property
-    @base.property
+    @_base.property
     def premiered(self) -> Optional[str]:
-        """
-        Get premiered
-        :return: Premiered status
-        """
         try:
             self._premiered
         except AttributeError:
@@ -178,12 +267,8 @@ class Anime(_MAL):
         return self._premiered
 
     @property
-    @base.property
+    @_base.property
     def broadcast(self) -> Optional[str]:
-        """
-        Get broadcast
-        :return: Broadcast status
-        """
         try:
             self._broadcast
         except AttributeError:
@@ -191,12 +276,8 @@ class Anime(_MAL):
         return self._broadcast
 
     @property
-    @base.property_list
+    @_base.property_list
     def producers(self) -> List[str]:
-        """
-        Get producers
-        :return: List of producers
-        """
         try:
             self._producers
         except AttributeError:
@@ -206,12 +287,8 @@ class Anime(_MAL):
         return self._producers
 
     @property
-    @base.property_list
+    @_base.property_list
     def licensors(self) -> List[str]:
-        """
-        Get licensors
-        :return: List of licensors
-        """
         try:
             self._licensors
         except AttributeError:
@@ -221,12 +298,8 @@ class Anime(_MAL):
         return self._licensors
 
     @property
-    @base.property_list
+    @_base.property_list
     def studios(self) -> List[str]:
-        """
-        Get studios
-        :return: List of studios
-        """
         try:
             self._studios
         except AttributeError:
@@ -234,12 +307,8 @@ class Anime(_MAL):
         return self._studios
 
     @property
-    @base.property
+    @_base.property
     def source(self) -> Optional[str]:
-        """
-        Get source
-        :return: Source
-        """
         try:
             self._source
         except AttributeError:
@@ -247,12 +316,8 @@ class Anime(_MAL):
         return self._source
 
     @property
-    @base.property
+    @_base.property
     def duration(self) -> Optional[str]:
-        """
-        Get duration
-        :return: Duration string
-        """
         try:
             self._duration
         except AttributeError:
@@ -260,12 +325,8 @@ class Anime(_MAL):
         return self._duration
 
     @property
-    @base.property
+    @_base.property
     def rating(self) -> Optional[str]:
-        """
-        Get age rating
-        :return: Age rating
-        """
         try:
             self._rating
         except AttributeError:
@@ -273,25 +334,17 @@ class Anime(_MAL):
         return self._rating
 
     @property
-    @base.property_dict
+    @_base.property_dict
     def related_anime(self) -> Dict[str, List[str]]:
-        """
-        Get related anime
-        :return: Dict of related anime
-        """
         try:
             self._related_anime
         except AttributeError:
-            self._related_anime = self._get_related()
+            self._related_anime = self._get_related_anime()
         return self._related_anime
 
     @property
-    @base.property_list
+    @_base.property_list
     def opening_themes(self) -> List[str]:
-        """
-        Get opening themes
-        :return: List of opening themes
-        """
         try:
             self._opening_themes
         except AttributeError:
@@ -299,12 +352,8 @@ class Anime(_MAL):
         return self._opening_themes
 
     @property
-    @base.property_list
+    @_base.property_list
     def ending_themes(self) -> List[str]:
-        """
-        Get ending themes
-        :return: List of ending themes
-        """
         try:
             self._ending_themes
         except AttributeError:
@@ -312,12 +361,8 @@ class Anime(_MAL):
         return self._ending_themes
 
     @property
-    @base.property_list
-    def characters(self) -> List[AnimeCharacter]:
-        """
-        Get characters
-        :return: List of characters
-        """
+    @_base.property_list
+    def characters(self) -> List[AnimeCharacterResult]:
         try:
             self._characters
         except AttributeError:
@@ -325,12 +370,8 @@ class Anime(_MAL):
         return self._characters
 
     @property
-    @base.property_list
-    def staff(self) -> List[Staff]:
-        """
-        Get staff
-        :return: List of staff
-        """
+    @_base.property_list
+    def staff(self) -> List[AnimeStaffResult]:
         try:
             self._staff
         except AttributeError:
@@ -338,12 +379,8 @@ class Anime(_MAL):
         return self._staff
 
     @property
-    @base.property
+    @_base.property
     def synopsis(self) -> Optional[str]:
-        """
-        Get synopsis
-        :return: Synopsis text
-        """
         try:
             self._synopsis
         except AttributeError:
@@ -353,12 +390,8 @@ class Anime(_MAL):
         return self._synopsis
 
     @property
-    @base.property
+    @_base.property
     def background(self) -> Optional[str]:
-        """
-        Get background info
-        :return: Background info
-        """
         try:
             self._background
         except AttributeError:

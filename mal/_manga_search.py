@@ -1,24 +1,55 @@
 from typing import List, Optional
 
-from mal import config, base
-from mal.search import _Search, _SearchResult
+from mal import config, _base
+from mal._search import _Search, _SearchResult
 
 
 class MangaSearchResult(_SearchResult):
     def __init__(self, tds):
         """
         Manga search result
-        :param tds: Table columns
         """
         super().__init__(tds)
 
+    """
+    Duplicate properties for AutoAPI
+    """
+
     @property
-    @base.property
+    def mal_id(self) -> int:
+        return super().mal_id
+
+    @property
+    def title(self) -> str:
+        return super().title
+
+    @property
+    def url(self) -> str:
+        return super().url
+
+    @property
+    def image_url(self) -> str:
+        return super().image_url
+
+    @property
+    def type(self) -> Optional[str]:
+        return super().type
+
+    @property
+    def score(self) -> Optional[float]:
+        return super().score
+
+    @property
+    def synopsis(self) -> Optional[str]:
+        return super().synopsis
+
+    """
+    Duplicate properties for AutoAPI ends here
+    """
+
+    @property
+    @_base.property
     def volumes(self) -> Optional[int]:
-        """
-        Get volumes
-        :return: Volumes count
-        """
         try:
             self._volumes
         except AttributeError:
@@ -30,25 +61,19 @@ class MangaSearch(_Search):
     def __init__(self, query: str, timeout: int = config.TIMEOUT):
         """
         Manga search by query
-        :param query: Query text
-        :param timeout: Timeout in seconds
         """
         super().__init__(query, "manga", timeout)
 
     def reload(self) -> None:
         """
         Reload manga search
-        :return: None
         """
         self.__init__(self._query)
 
     @property
-    @base.property_list
+    @_base.property_list
     def results(self) -> List[MangaSearchResult]:
-        """
-        Get results
-        :return: List of manga search results
-        """
+
         try:
             self._results
         except AttributeError:
