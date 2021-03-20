@@ -20,9 +20,17 @@ feedback is also appreciated.
 
 ## Installation and Usage
 
-To install the library: `pip install mal-api`
+To install the library:
 
-To import the library: `from mal import *`
+```
+pip install -U mal-api
+```
+
+To import the library:
+
+```python
+from mal import *
+```
 
 ## Example
 
