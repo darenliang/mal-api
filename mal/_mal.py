@@ -35,7 +35,7 @@ class _MAL(_Base):
                         return first_link.text
                     if typing == list:
                         res = [
-                            link.get_text() for link in span.parent.findChildren("a")
+                            link.get_text().strip() for link in span.parent.findChildren("a")
                         ]
                         if "add some" in res:
                             res.remove("add some")
@@ -70,6 +70,10 @@ class _MAL(_Base):
                 return result.text.replace("\n", " ").replace("\r", "").strip()
         else:
             return None
+
+    @staticmethod
+    def _clean_text(text) -> str:
+        return text.strip().replace(u"\xa0", " ")
 
     def _parse_background(self, element) -> Optional[str]:
         raw_string = self._page.find(
@@ -167,8 +171,25 @@ class _MAL(_Base):
         try:
             self._genres
         except AttributeError:
-            self._genres = self._get_span_text(self._border_spans, "Genres:", list)
+            genres = self._get_span_text(self._border_spans, "Genres:", list)
+            if not genres:
+                self._genres = self._get_span_text(self._border_spans, "Genre:", list)
+            else:
+                self._genres = genres
         return self._genres
+
+    @property
+    @_base.property_list
+    def themes(self) -> List[str]:
+        try:
+            self._themes
+        except AttributeError:
+            themes = self._get_span_text(self._border_spans, "Themes:", list)
+            if not themes:
+                self._themes = self._get_span_text(self._border_spans, "Theme:", list)
+            else:
+                self._themes = themes
+        return self._themes
 
     @property
     @_base.property

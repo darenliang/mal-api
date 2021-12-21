@@ -62,13 +62,13 @@ class Anime(_MAL):
             data = self._page.find("div", {"class": "opnening"}).parent
         else:
             data = self._page.find("div", {"class": "ending"}).parent
-        data = data.findChildren("span", {"class": "theme-song"})
+        data = data.findChildren("td", {"width": "84%"})
         if data:
             if len(data) > 1:
                 for theme in data:
-                    themes.append(theme.text[4:])
+                    themes.append(self._clean_text(theme.text[3:]))
             else:
-                themes = [data[0].text]
+                themes = [self._clean_text(data[0].text)]
         return themes
 
     def _get_related_anime(self) -> Dict[str, List[str]]:

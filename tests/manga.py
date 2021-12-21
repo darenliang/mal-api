@@ -21,7 +21,10 @@ class TestManga(unittest.TestCase):
         self.assertEqual(self.manga.type, "Manga")
         self.assertEqual(self.manga.status, "Finished")
         self.assertEqual(
-            self.manga.genres, ["Mystery", "Drama", "Psychological", "Seinen"]
+            self.manga.genres, ["Drama", "Mystery"]
+        )
+        self.assertEqual(
+            self.manga.themes, ['Psychological']
         )
         self.assertIsInstance(self.manga.score, float)
         self.assertIsInstance(self.manga.scored_by, int)

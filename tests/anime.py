@@ -30,8 +30,9 @@ class TestAnime(unittest.TestCase):
         self.assertEqual(self.anime.source, "Original")
         self.assertEqual(
             self.anime.genres,
-            ["Action", "Adventure", "Comedy", "Drama", "Sci-Fi", "Space"],
+            ["Action", "Adventure", "Comedy", "Drama", "Sci-Fi"],
         )
+        self.assertEqual(self.anime.themes, ["Space"])
         self.assertEqual(self.anime.duration, "24 min. per ep.")
         self.assertEqual(self.anime.rating, "R - 17+ (violence & profanity)")
         self.assertIsInstance(self.anime.score, float)
@@ -97,11 +98,10 @@ class TestAnime(unittest.TestCase):
         self.assertEqual(
             self.anime.ending_themes,
             [
-                '"The Real Folk Blues" by The Seatbelts feat. Mai Yamane (eps 1-12, '
-                "14-25)",
-                '"Space Lion" by The Seatbelts (ep 13)',
-                '"Blue" by The Seatbelts feat. Mai Yamane (ep 26)',
-            ],
+                '"The Real Folk Blues" by The Seatbelts feat. Mai Yamane (eps  1-12, 14-25)',
+                '"Space Lion" by The Seatbelts (eps 13)',
+                '"Blue" by The Seatbelts feat. Mai Yamane (eps 26)',
+            ]
         )
         self.assertEqual(self.anime.characters[0].name, "Spiegel, Spike")
         self.assertEqual(self.anime.characters[0].role, "Main")
