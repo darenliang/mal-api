@@ -141,6 +141,10 @@ class Manga(_MAL):
         return super().genres
 
     @property
+    def themes(self) -> List[str]:
+        return super().themes
+
+    @property
     def score(self) -> Optional[float]:
         return super().score
 
