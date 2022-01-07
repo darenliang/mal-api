@@ -112,6 +112,8 @@ class _Search(_Base):
         self._query = query
         self._url = config.MAL_ENDPOINT + "{}.php?q={}".format(mal_type, query)
         self._page = self._parse_url(self._url)
+        if self._page.find("div", {"class": "display-submit"}) != None:
+            raise Exception("Temporarily blocked by MyAnimeList")
         self._inner_page = self._page.find("div", {"class": "js-block-list"})
         if self._inner_page is None:
             raise ValueError("No results found")
