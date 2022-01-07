@@ -11,6 +11,8 @@ class _MAL(_Base):
         self._mal_id = mal_id
         self._url = config.MAL_ENDPOINT + "{}/{}".format(mal_type, mal_id)
         self._page = self._parse_url(self._url)
+        if self._page.find("div", {"class": "display-submit"}) != None:
+            raise Exception("Temporarily blocked by MyAnimeList")
         title = self._page.find("meta", property="og:title")["content"]
         if title == "404 Not Found - MyAnimeList.net ":
             raise ValueError("No such id on MyAnimeList")
