@@ -59,48 +59,32 @@ class User(_Base):
         anime_other_stats = \
             anime_stats.select_one(".stats-data").select("li")
 
+        def get_stats(stats):
+            return int(stats.select_one("span").text.replace(",", ""))
+
+        def get_other_stats(stats):
+            return int(
+                stats.select_one("span:nth-child(2)").text.replace(",", "")
+            )
+
         self._anime_stats = {
             "days_watched": float(
                 anime_stats.select_one(".stat-score > div")
                     .text.split()[1].replace(",", "")
             ),
             "mean_score": float(anime_stats.select_one(".score-label").text),
-            "watching": int(
-                anime_watching_stats[0].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "completed": int(
-                anime_watching_stats[1].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "on_hold": int(
-                anime_watching_stats[2].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "dropped": int(
-                anime_watching_stats[3].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "plan_to_watch": int(
-                anime_watching_stats[4].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "total_entries": int(
-                anime_other_stats[0].select_one("span:nth-child(2)")
-                    .text.replace(",", "")
-            ),
-            "rewatched": int(
-                anime_other_stats[1].select_one("span:nth-child(2)")
-                    .text.replace(",", "")
-            ),
-            "episodes_watched": int(
-                anime_other_stats[2].select_one("span:nth-child(2)")
-                    .text.replace(",", "")
-            ),
+            "watching": get_stats(anime_watching_stats[0]),
+            "completed": get_stats(anime_watching_stats[1]),
+            "on_hold": get_stats(anime_watching_stats[2]),
+            "dropped": get_stats(anime_watching_stats[3]),
+            "plan_to_watch": get_stats(anime_watching_stats[4]),
+            "total_entries": get_other_stats(anime_other_stats[0]),
+            "rewatched": get_other_stats(anime_other_stats[1]),
+            "episodes_watched": get_other_stats(anime_other_stats[2]),
         }
 
         manga_stats = self._page.select_one(".stats.manga")
-        manga_watching_stats = \
+        manga_reading_stats = \
             manga_stats.select_one(".stats-status").select("li")
         manga_other_stats = \
             manga_stats.select_one(".stats-data").select("li")
@@ -111,42 +95,15 @@ class User(_Base):
                     .text.split()[1].replace(",", "")
             ),
             "mean_score": float(manga_stats.select_one(".score-label").text),
-            "reading": int(
-                manga_watching_stats[0].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "completed": int(
-                manga_watching_stats[1].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "on_hold": int(
-                manga_watching_stats[2].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "dropped": int(
-                manga_watching_stats[3].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "plan_to_read": int(
-                manga_watching_stats[4].select_one("span")
-                    .text.replace(",", "")
-            ),
-            "total_entries": int(
-                manga_other_stats[0].select_one("span:nth-child(2)")
-                    .text.replace(",", "")
-            ),
-            "reread": int(
-                manga_other_stats[1].select_one("span:nth-child(2)")
-                    .text.replace(",", "")
-            ),
-            "chapters_read": int(
-                manga_other_stats[2].select_one("span:nth-child(2)")
-                    .text.replace(",", "")
-            ),
-            "volumes_read": int(
-                manga_other_stats[3].select_one("span:nth-child(2)")
-                    .text.replace(",", "")
-            ),
+            "reading": get_stats(manga_reading_stats[0]),
+            "completed": get_stats(manga_reading_stats[1]),
+            "on_hold": get_stats(manga_reading_stats[2]),
+            "dropped": get_stats(manga_reading_stats[3]),
+            "plan_to_read": get_stats(manga_reading_stats[4]),
+            "total_entries": get_other_stats(manga_other_stats[0]),
+            "reread": get_other_stats(manga_other_stats[1]),
+            "chapters_read": get_other_stats(manga_other_stats[2]),
+            "volumes_read": get_other_stats(manga_other_stats[3]),
         }
 
         self._favorites = {
