@@ -14,7 +14,11 @@ setuptools.setup(
     author_email="darenliang@outlook.com",
     url="https://github.com/darenliang/mal-api",
     packages=setuptools.find_packages(),
-    install_requires=["requests", "beautifulsoup4"],
+    install_requires=[
+        "requests>=2,<3",
+        "beautifulsoup4>=4,<5",
+        "python-dateutil>=2,<3"
+    ],
     keywords=["api", "myanimelist"],
     classifiers=[
         "Programming Language :: Python :: 3",
