@@ -3,7 +3,15 @@ from typing import Optional, List, Dict
 from mal import config, _base
 from mal._mal import _MAL
 
-
+class MangaType:
+    MANGA       = 1
+    ONE_SHOT    = 2
+    DOUJINSHI   = 3
+    LIGHT_NOVEL = 4
+    NOVER       = 5
+    MANHWAW     = 6
+    MANHUA      = 7
+    
 class MangaCharacterResult:
     def __init__(self, name, role):
         """
