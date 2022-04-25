@@ -1,8 +1,17 @@
 from typing import Optional, List, Dict
+from enum import IntEnum
 
 from mal import config, _base
 from mal._mal import _MAL
 
+
+class AnimeType(IntEnum):
+    TV =        1
+    OVA =       2
+    MOVIE =     3
+    SPECIAL =   4
+    ONA =       5
+    MUSIC =     6
 
 class AnimeCharacterResult:
     def __init__(self, name, role, voice_actor):
