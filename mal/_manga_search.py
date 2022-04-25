@@ -58,11 +58,11 @@ class MangaSearchResult(_SearchResult):
 
 
 class MangaSearch(_Search):
-    def __init__(self, query: str, timeout: int = config.TIMEOUT):
+    def __init__(self, query: str, type: str=None, timeout: int = config.TIMEOUT):
         """
         Manga search by query
         """
-        super().__init__(query, "manga", timeout)
+        super().__init__(query, type, "manga", timeout)
 
     def reload(self) -> None:
         """
