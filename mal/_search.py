@@ -1,5 +1,6 @@
 import re
 from typing import Optional
+import warnings
 
 from mal import config, _base
 from mal._base import _Base
@@ -105,12 +106,40 @@ class _SearchResult:
 
 
 class _Search(_Base):
-    def __init__(self, query, mal_type, timeout):
+    
+    def __init__(self, query: str, _type: str, mal_type: str, timeout: int):
         if len(query) > 100:
             raise ValueError("Query cannot be more than 100 characters")
+
         super().__init__(timeout)
         self._query = query
-        self._url = config.MAL_ENDPOINT + "{}.php?q={}".format(mal_type, query)
+        
+        if _type != "" or _type != None:
+            if isinstance(_type, str):
+                try:
+                    # The given type is in string format then 
+                    # check for the dictionary
+                    t = config.MAL_ADVANCED_SEARCH.get(
+                        mal_type
+                    )[_type.lower()]
+                except KeyError: 
+                    warnings.warn("Type: %s is not a valid type." % (_type))
+                    t = None
+            else:
+                # If not instance of string then return the value
+                # For ex: AnimeType.TV
+                t = _type
+        else:
+            t = None
+        
+
+        self._url = "{endpoint}{mal_type}.php?q={q}&cat={mal_type}&type={type}".format(
+            endpoint=config.MAL_ENDPOINT,
+            q=query,
+            mal_type=mal_type,
+            type=t
+        )
+        
         self._page = self._parse_url(self._url)
         if self._page.find("div", {"class": "display-submit"}) != None:
             raise Exception("Temporarily blocked by MyAnimeList")
