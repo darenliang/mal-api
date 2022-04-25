@@ -58,11 +58,12 @@ class AnimeSearchResult(_SearchResult):
 
 
 class AnimeSearch(_Search):
-    def __init__(self, query: str, timeout: int = config.TIMEOUT):
+    def __init__(self, query: str, type: str=None, timeout: int = config.TIMEOUT):
         """
         Anime search by query
         """
-        super().__init__(query, "anime", timeout)
+        # Add advanced search type for anime
+        super().__init__(query, type, "anime", timeout)
 
     def reload(self) -> None:
         """
