@@ -1,10 +1,9 @@
 import math
 import re
 from datetime import datetime, timezone, timedelta
-import requests
 from typing import Optional, List, Dict
-from calendar import monthrange
 
+import requests
 from dateutil.parser import parse
 
 from mal import config
@@ -21,11 +20,13 @@ class User(_Base):
             raise ValueError(
                 "Username has to be between 2 and 16 characters long"
             )
-        self._username = username
-        self._url = config.MAL_ENDPOINT + "profile/{}".format(self._username)
+        self._url = config.MAL_ENDPOINT + "profile/{}".format(username)
         self._page = self._parse_url(self._url)
         if self._page.select_one(".display-submit"):
             raise Exception("Temporarily blocked by MyAnimeList")
+        self._username = self._page.select_one(
+            "meta[property='og:url']"
+        )["content"].split("/")[-1]
         title = self._page.select_one("meta[property='og:title']")["content"]
         if title == "404 Not Found - MyAnimeList.net ":
             raise ValueError("No such user on MyAnimeList")
@@ -41,6 +42,8 @@ class User(_Base):
         self._joined = None
         for row in self._page.select_one(".user-status").select("li"):
             title = row.select_one(".user-status-title").text
+            if title == "Supporter":
+                continue
             data = row.select_one(".user-status-data").text
             if title == "Last Online":
                 self._last_online = self._parse_date(data)
@@ -107,47 +110,32 @@ class User(_Base):
         }
 
         self._favorites = {
-            "anime": None if self._page.find("div",
-                                             {"id": "anime_favorites"}) == None
-            else [int(re.search("anime/(.*)/", fa["href"]).group(1)) for fa in
-                  self._page.find("div",
-                                  {"id": "anime_favorites"}).findChildren(
-                      "ul")[0].findChildren("a")],
-            "manga": None if self._page.find("div",
-                                             {"id": "manga_favorites"}) == None
-            else [int(re.search("manga/(.*)/", fm["href"]).group(1)) for fm in
-                  self._page.find("div",
-                                  {"id": "manga_favorites"}).findChildren(
-                      "ul")[0].findChildren("a")],
-            "characters": None if self._page.find("div", {
-                "id": "character_favorites"}) == None
+            "anime": None if
+            self._page.select_one("#anime_favorites") is None
+            else [int(re.search("anime/(.*)/", fa["href"]).group(1)) for fa
+                  in self._page.select("#anime_favorites a")],
+            "manga": None if
+            self._page.select_one("#manga_favorites") is None
+            else [int(re.search("manga/(.*)/", fm["href"]).group(1)) for fm
+                  in self._page.select("#manga_favorites a")],
+            "characters": None if
+            self._page.select_one("#character_favorites") is None
             else [int(re.search("character/(.*)/", fc["href"]).group(1)) for fc
-                  in self._page.find("div", {
-                    "id": "character_favorites"}).findChildren("ul")[
-                      0].findChildren("a")],
-            "people": None if self._page.find("div", {
-                "id": "person_favorites"}) == None
-            else [int(re.search("people/(.*)/", fp["href"]).group(1)) for fp in
-                  self._page.find("div",
-                                  {"id": "person_favorites"}).findChildren(
-                      "ul")[0].findChildren("a")]
+                  in self._page.select("#character_favorites a")],
+            "people": None if
+            self._page.select_one("#person_favorites") is None
+            else [int(re.search("people/(.*)/", fp["href"]).group(1)) for fp
+                  in self._page.select("#person_favorites a")]
         }
 
-        self._about = self._page.find("div", {
-            "class": "word-break"}).text if self._page.find("div", {
-            "class": "word-break"}) != None else None
+        self._about = self._page.select_one(".word-break")
+        if self._about:
+            self._about = self._about.text
 
-        self._friend_count = int(self._page.find("a", {
-            "href": f"https://myanimelist.net/profile/{self._username}/friends"}).text.replace(
-            "All (", "")[:-1])
-        self._friends = self._get_friends() if friends else None
-
-        self._anime_list = self._get_anime_list() if anime_list and self._page.find(
-            "div", {"class": "updates anime"}).find("p",
-                                                    text="Access to this list has been restricted by the owner.") == None else None
-        self._manga_list = self._get_manga_list() if manga_list and self._page.find(
-            "div", {"class": "updates manga"}).find("p",
-                                                    text="Access to this list has been restricted by the owner.") == None else None
+        self._friend_count = int(
+            self._page.select_one(
+                f"a[href=\"https://myanimelist.net/profile/{self._username}"
+                f"/friends\"]").text.replace("All (", "")[:-1])
 
     @staticmethod
     def _parse_date(date) -> datetime:
@@ -174,19 +162,18 @@ class User(_Base):
             for i in range(1, (math.ceil(self._friend_count / 100)) + 1):
                 friend_page = self._parse_url(
                     f"{config.MAL_ENDPOINT}profile/{self._username}/friends?p={i}")
-                if friend_page.find("div",
-                                    {"class": "display-submit"}) != None:
+                if friend_page.select_one(".display-submit") is not None:
                     raise Exception("Temporarily blocked by MyAnimeList")
 
-                friends.extend([{"username": friend.findChildren("a")[0].text,
+                friends.extend([{"username": friend.select_one("a").text,
                                  "friends_since": self._parse_date(
-                                     friend.findChildren("div")[
-                                         2].text.replace(
-                                         "\n      Friends since ", "")[
-                                     :-4]) if len(friend.findChildren(
-                                     "div")) >= 3 else None}
+                                     friend.findChildren("div")[2]
+                                         .text.replace(
+                                         "\n      Friends since ", ""
+                                     )[:-4]) if len(
+                                     friend.select("div")) >= 3 else None}
                                 for friend in
-                                friend_page.findAll("div", {"class": "data"})])
+                                friend_page.select(".data")])
         return friends
 
     def _get_anime_list(self) -> List[Dict[str, int]]:
@@ -202,10 +189,8 @@ class User(_Base):
                                 "is_rewatching": a["is_rewatching"],
                                 "watched_episodes": a["num_watched_episodes"],
                                 "total_episodes": a["anime_num_episodes"],
-                                "start_date": a["start_date_string"] if a[
-                                                                            "start_date_string"] != None else None,
-                                "finish_date": a["finish_date_string"] if a[
-                                                                              "finish_date_string"] != None else None,
+                                "start_date": a["start_date_string"],
+                                "finish_date": a["finish_date_string"],
                                 "priority": a["priority_string"]}
                                for a in r_alist.json()])
         return anime_list
@@ -226,10 +211,8 @@ class User(_Base):
                                 "read_volumes": m["num_read_volumes"],
                                 "total_chapters": m["manga_num_chapters"],
                                 "total_volumes": m["manga_num_volumes"],
-                                "start_date": m["start_date_string"] if m[
-                                                                            "start_date_string"] != None else None,
-                                "finish_date": m["finish_date_string"] if m[
-                                                                              "finish_date_string"] != None else None,
+                                "start_date": m["start_date_string"],
+                                "finish_date": m["finish_date_string"],
                                 "priority": m["priority_string"]}
                                for m in r_mlist.json()])
         return manga_list
@@ -292,12 +275,30 @@ class User(_Base):
 
     @property
     def friends(self) -> Optional[List[Dict[str, str]]]:
+        try:
+            self._friends
+        except AttributeError:
+            self._friends = self._get_friends() if self.friends else None
         return self._friends
 
     @property
     def anime_list(self) -> Optional[List[Dict[str, int]]]:
+        try:
+            self._anime_list
+        except AttributeError:
+            self._anime_list = self._get_anime_list() \
+                if self.anime_list and \
+                   self._page.select_one(".anime.updates p") is None \
+                else None
         return self._anime_list
 
     @property
     def manga_list(self) -> Optional[List[Dict[str, int]]]:
+        try:
+            self._manga_list
+        except AttributeError:
+            self._manga_list = self._get_manga_list() \
+                if self.manga_list and \
+                   self._page.select_one(".manga.updates p") is None \
+                else None
         return self._manga_list
