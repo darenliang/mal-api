@@ -123,7 +123,7 @@ class _Search(_Base):
                         mal_type
                     )[_type.lower()]
                 except KeyError: 
-                    warnings.warn("Type: %s is not a valid type." % (_type))
+                    warnings.warn("Invalid Advance search type.")
                     t = None
             else:
                 # If not instance of string then return the value
