@@ -1,5 +1,5 @@
 import re
-from typing import Any, Optional, List, Dict
+from typing import Any, Optional, List, Dict, Tuple
 
 from mal import config, _base
 from mal._base import _Base
@@ -192,6 +192,15 @@ class _MAL(_Base):
             else:
                 self._themes = themes
         return self._themes
+
+    @property
+    @_base.property_list
+    def external_links(self) -> List[Tuple[str, str]]:
+        try:
+            self._external_links
+        except AttributeError:
+            self._external_links = [(a.div.text, a['href']) for a in self._page.select(".external_links .link")]
+        return self._external_links
 
     @property
     @_base.property

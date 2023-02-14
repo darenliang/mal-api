@@ -93,6 +93,17 @@ class TestAnime(unittest.TestCase):
         self.assertEqual(self.anime.characters[0].voice_actor, "Yamadera, Kouichi")
         self.assertEqual(self.anime.staff[0].name, "Maseba, Yutaka")
         self.assertEqual(self.anime.staff[0].role, "Producer")
+        self.assertEqual(
+            self.anime.external_links,
+            [
+                ('Official Site', 'http://www.cowboy-bebop.net/'),
+                ('AniDB', 'https://anidb.net/perl-bin/animedb.pl?show=anime&aid=23'),
+                ('ANN', 'https://www.animenewsnetwork.com/encyclopedia/anime.php?id=13'),
+                ('Wikipedia', 'http://en.wikipedia.org/wiki/Cowboy_Bebop'),
+                ('Wikipedia', 'https://ja.wikipedia.org/wiki/%E3%82%AB%E3%82%A6%E3%83%9C%E3%83%BC%E3%82%A4%E3%83%93%E3%83%90%E3%83%83%E3%83%97'),
+                ('Syoboi', 'https://cal.syoboi.jp/tid/538'),
+            ]
+        )
 
 
 if __name__ == "__main__":

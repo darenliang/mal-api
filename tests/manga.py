@@ -77,6 +77,13 @@ class TestManga(unittest.TestCase):
         )
         self.assertEqual(self.manga.characters[0].name, "Liebert, Johan")
         self.assertEqual(self.manga.characters[0].role, "Main")
+        self.assertEqual(
+            self.manga.external_links,
+            [
+                ('Wikipedia', 'http://ja.wikipedia.org/wiki/MONSTER'),
+                ('Wikipedia', 'https://en.wikipedia.org/wiki/Monster_(manga)'),
+            ]
+        )
 
 
 if __name__ == "__main__":
