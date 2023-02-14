@@ -30,9 +30,9 @@ class TestAnime(unittest.TestCase):
         self.assertEqual(self.anime.source, "Original")
         self.assertEqual(
             self.anime.genres,
-            ["Action", "Adventure", "Comedy", "Drama", "Sci-Fi"],
+            ["Action", "Award Winning", "Sci-Fi"],
         )
-        self.assertEqual(self.anime.themes, ["Space"])
+        self.assertEqual(self.anime.themes, ["Adult Cast", "Space"])
         self.assertEqual(self.anime.duration, "24 min. per ep.")
         self.assertEqual(self.anime.rating, "R - 17+ (violence & profanity)")
         self.assertIsInstance(self.anime.score, float)
@@ -43,22 +43,7 @@ class TestAnime(unittest.TestCase):
         self.assertIsInstance(self.anime.favorites, int)
         self.assertEqual(
             self.anime.synopsis,
-            "In the year 2071, humanity has colonized several of the planets and moons "
-            "of the solar system leaving the now uninhabitable surface of planet Earth "
-            "behind. The Inter Solar System Police attempts to keep peace in the "
-            'galaxy, aided in part by outlaw bounty hunters, referred to as "Cowboys." '
-            "The ragtag team aboard the spaceship Bebop are two such individuals.  "
-            "Mellow and carefree Spike Spiegel is balanced by his boisterous, "
-            "pragmatic partner Jet Black as the pair makes a living chasing bounties "
-            "and collecting rewards. Thrown off course by the addition of new members "
-            "that they meet in their travels—Ein, a genetically engineered, highly "
-            "intelligent Welsh Corgi; femme fatale Faye Valentine, an enigmatic "
-            "trickster with memory loss; and the strange computer whiz kid Edward "
-            "Wong—the crew embarks on thrilling adventures that unravel each member's "
-            "dark and mysterious past little by little.  Well-balanced with high "
-            "density action and light-hearted comedy, Cowboy Bebop is a space Western "
-            "classic and an homage to the smooth and improvised music it is named "
-            "after.  [Written by MAL Rewrite]",
+            "Crime is timeless. By the year 2071, humanity has expanded across the galaxy, filling the surface of other planets with settlements like those on Earth. These new societies are plagued by murder, drug use, and theft, and intergalactic outlaws are hunted by a growing number of tough bounty hunters.  Spike Spiegel and Jet Black pursue criminals throughout space to make a humble living. Beneath his goofy and aloof demeanor, Spike is haunted by the weight of his violent past. Meanwhile, Jet manages his own troubled memories while taking care of Spike and the Bebop, their ship. The duo is joined by the beautiful con artist Faye Valentine, odd child Edward Wong Hau Pepelu Tivrusky IV, and Ein, a bioengineered Welsh Corgi.  While developing bonds and working to catch a colorful cast of criminals, the Bebop crew's lives are disrupted by a menace from Spike's past. As a rival's maniacal plot continues to unravel, Spike must choose between life with his newfound family or revenge for his old wounds.  [Written by MAL Rewrite]",
         )
         self.assertEqual(
             self.anime.background,

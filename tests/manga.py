@@ -16,15 +16,15 @@ class TestManga(unittest.TestCase):
         self.assertEqual(self.manga.title_synonyms, [])
         self.assertEqual(self.manga.url, "https://myanimelist.net/manga/1/Monster")
         self.assertEqual(
-            self.manga.image_url, "https://cdn.myanimelist.net/images/manga/3/54525.jpg"
+            self.manga.image_url, "https://cdn.myanimelist.net/images/manga/3/258224.jpg"
         )
         self.assertEqual(self.manga.type, "Manga")
         self.assertEqual(self.manga.status, "Finished")
         self.assertEqual(
-            self.manga.genres, ["Drama", "Mystery"]
+            self.manga.genres, ["Award Winning", "Drama", "Mystery"]
         )
         self.assertEqual(
-            self.manga.themes, ['Psychological']
+            self.manga.themes, ['Adult Cast', 'Psychological']
         )
         self.assertIsInstance(self.manga.score, float)
         self.assertIsInstance(self.manga.scored_by, int)
