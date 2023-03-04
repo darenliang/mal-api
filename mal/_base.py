@@ -40,4 +40,4 @@ class _Base:
 
     def _parse_url(self, url) -> Any:
         page_response = requests.get(url, timeout=self.timeout)
-        return BeautifulSoup(page_response.content, "html.parser")
+        return BeautifulSoup(page_response.content, "html.parser", from_encoding='utf-8')
