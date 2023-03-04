@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Tuple
 
 from mal import config, _base
 from mal._mal import _MAL
@@ -143,6 +143,11 @@ class Manga(_MAL):
     @property
     def themes(self) -> List[str]:
         return super().themes
+
+    @property
+    def external_links(self) -> List[Tuple[str, str]]:
+        """Return List of Tuples containing name and url"""
+        return super().external_links
 
     @property
     def score(self) -> Optional[float]:
